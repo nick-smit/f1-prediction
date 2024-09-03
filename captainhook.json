@@ -23,6 +23,9 @@
         "action": "\\CaptainHook\\App\\Hook\\PHP\\Action\\Linting"
       },
       {
+        "action": "./vendor/bin/sail artisan test --coverage --min=33 --compact"
+      },
+      {
         "action": "./vendor/bin/sail npm run lint -- --fix"
       },
       {
