@@ -1,6 +1,8 @@
 import {createInertiaApp} from '@inertiajs/react';
 import {createRoot} from 'react-dom/client';
 
+require('bootstrap')
+
 let appName = 'Laravel';
 if (
     import.meta.env.VITE_APP_NAME !== undefined &&
