@@ -14,6 +14,9 @@
         "action": "./vendor/bin/sail composer validate"
       },
       {
+        "action": "./vendor/bin/sail php ./vendor/bin/rector --dry-run --no-progress-bar --no-diffs"
+      },
+      {
         "action": "./vendor/bin/sail php ./vendor/bin/pint --dirty"
       },
       {
