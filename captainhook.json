@@ -1,63 +1,63 @@
 {
-  "commit-msg": {
-    "enabled": false,
-    "actions": []
-  },
-  "pre-push": {
-    "enabled": false,
-    "actions": []
-  },
-  "pre-commit": {
-    "enabled": true,
-    "actions": [
-      {
-        "action": "./vendor/bin/sail composer validate"
-      },
-      {
-        "action": "./vendor/bin/sail php ./vendor/bin/rector --dry-run --no-progress-bar --no-diffs"
-      },
-      {
-        "action": "./vendor/bin/sail php ./vendor/bin/pint --dirty"
-      },
-      {
-        "action": "\\CaptainHook\\App\\Hook\\PHP\\Action\\Linting"
-      },
-      {
-        "action": "./vendor/bin/sail artisan test --coverage --min=95 --compact"
-      },
-      {
-        "action": "./vendor/bin/sail npm run lint -- --fix"
-      },
-      {
-        "action": "./vendor/bin/sail npm run format"
-      },
-      {
-        "action": "git add $(git rev-parse --show-toplevel)"
-      }
-    ]
-  },
-  "prepare-commit-msg": {
-    "enabled": false,
-    "actions": []
-  },
-  "post-commit": {
-    "enabled": false,
-    "actions": []
-  },
-  "post-merge": {
-    "enabled": false,
-    "actions": []
-  },
-  "post-checkout": {
-    "enabled": false,
-    "actions": []
-  },
-  "post-rewrite": {
-    "enabled": false,
-    "actions": []
-  },
-  "post-change": {
-    "enabled": false,
-    "actions": []
-  }
+    "commit-msg": {
+        "enabled": false,
+        "actions": []
+    },
+    "pre-push": {
+        "enabled": false,
+        "actions": []
+    },
+    "pre-commit": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "./vendor/bin/sail composer validate"
+            },
+            {
+                "action": "./vendor/bin/sail php ./vendor/bin/rector --dry-run --no-progress-bar --no-diffs"
+            },
+            {
+                "action": "./vendor/bin/sail php ./vendor/bin/pint --dirty"
+            },
+            {
+                "action": "\\CaptainHook\\App\\Hook\\PHP\\Action\\Linting"
+            },
+            {
+                "action": "./vendor/bin/sail artisan test --coverage --min=95 --compact"
+            },
+            {
+                "action": "./vendor/bin/sail npm run lint -- --fix"
+            },
+            {
+                "action": "./vendor/bin/sail npm run format"
+            },
+            {
+                "action": "git add $(git rev-parse --show-toplevel)"
+            }
+        ]
+    },
+    "prepare-commit-msg": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-commit": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-merge": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-checkout": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-rewrite": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-change": {
+        "enabled": false,
+        "actions": []
+    }
 }

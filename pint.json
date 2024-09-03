@@ -1,6 +1,6 @@
 {
-  "preset": "psr12",
-  "rules": {
-    "global_namespace_import": true
-  }
+    "preset": "psr12",
+    "rules": {
+        "global_namespace_import": true
+    }
 }
