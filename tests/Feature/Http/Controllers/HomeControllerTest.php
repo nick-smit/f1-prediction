@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Http\Controllers;
 
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
-class HomeControllerTest extends TestCase
+final class HomeControllerTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
     public function test_example(): void
     {
-        $response = $this->get(route('home'));
+        $testResponse = $this->get(route('home'));
 
-        $response->assertStatus(200);
-        $response->assertInertia(static function (AssertableInertia $assertableInertia): void {
+        $testResponse->assertStatus(200);
+        $testResponse->assertInertia(static function (AssertableInertia $assertableInertia): void {
             $assertableInertia->component('Home');
         });
     }

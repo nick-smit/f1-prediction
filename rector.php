@@ -22,6 +22,10 @@ return RectorConfig::configure()
     ])
     ->withSkipPath(__DIR__ . '/bootstrap/cache')
     ->withSkipPath(__DIR__ . '/resources/views/*.blade.php')
+    ->withSkip([
+        Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector::class => [__DIR__ . '/tests', __DIR__ . '/database/factories'],
+        RectorLaravel\Rector\FuncCall\ArgumentFuncCallToMethodCallRector::class => [__DIR__ . '/tests', __DIR__ . '/database/factories']
+    ])
     ->withPhpSets(php83: true,)
     ->withPreparedSets(
         deadCode: true,
@@ -29,11 +33,9 @@ return RectorConfig::configure()
         codingStyle: true,
         typeDeclarations: true,
         privatization: true,
-        naming: true,
         instanceOf: true,
         earlyReturn: true,
         strictBooleans: true,
-        carbon: true,
         rectorPreset: true,
         phpunitCodeQuality: true,
         phpunit: true,

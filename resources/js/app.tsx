@@ -1,7 +1,7 @@
-import {createInertiaApp} from '@inertiajs/react';
-import {createRoot} from 'react-dom/client';
+import { createInertiaApp } from '@inertiajs/react';
+import { createRoot } from 'react-dom/client';
 
-require('bootstrap')
+require('./bootstrap');
 
 let appName = 'Laravel';
 if (

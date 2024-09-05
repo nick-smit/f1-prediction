@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8fecfa19b7000e10c880c45074a5cfdb",
+    "content-hash": "d15bf3062a503ffb9e351a1756ce2b2c",
     "packages": [
         {
             "name": "brick/math",
@@ -2245,6 +2245,59 @@
                 "source": "https://github.com/nette/utils/tree/v4.0.5"
             },
             "time": "2024-08-07T15:39:19+00:00"
+        },
+        {
+            "name": "nick-smit/openf1-api",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nick-smit/openf1-api.git",
+                "reference": "d73f9fd214d05e1891d829578d7013d7ef6bb9ea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nick-smit/openf1-api/zipball/d73f9fd214d05e1891d829578d7013d7ef6bb9ea",
+                "reference": "d73f9fd214d05e1891d829578d7013d7ef6bb9ea",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.5|^7.4.5",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.64",
+                "phpunit/phpunit": "^11.3",
+                "rector/rector": "^1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NickSmit\\OpenF1Api\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nick Smit",
+                    "email": "nicksmit1994@gmail.com"
+                }
+            ],
+            "description": "An API client for openf1.org",
+            "homepage": "https://github.com/nick-smit/openf1-api",
+            "keywords": [
+                "Formula 1",
+                "OpenF1",
+                "api",
+                "client"
+            ],
+            "support": {
+                "issues": "https://github.com/nick-smit/openf1-api/issues",
+                "source": "https://github.com/nick-smit/openf1-api/tree/1.0.2"
+            },
+            "time": "2024-09-05T11:00:16+00:00"
         },
         {
             "name": "nunomaduro/termwind",
