@@ -27,8 +27,9 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call([
-            TeamSeeder::class,
             DriverSeeder::class,
+            RaceWeekendSeeder::class,
+            TeamSeeder::class,
         ]);
     }
 }
