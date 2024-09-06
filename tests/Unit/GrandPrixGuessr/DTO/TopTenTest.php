@@ -15,7 +15,6 @@ final class TopTenTest extends TestCase
 {
     public function test_a_top_ten_can_be_created(): void
     {
-
         $redBullRacing = new Team(1, 'Red Bull Racing');
         $mcLaren = new Team(3, 'McLaren');
         $ferrari = new Team(6, 'Ferrari');
@@ -35,7 +34,7 @@ final class TopTenTest extends TestCase
             new Driver(10, 'Lance Stroll', $astonMartin),
         ]);
 
-        $this->assertCount(10, $topTen->drivers);
+        $this->assertCount(10, $topTen);
         $this->assertEquals(new Driver(1, 'Max Verstappen', $redBullRacing), $topTen->drivers[0]);
         $this->assertEquals(new Driver(10, 'Lance Stroll', $astonMartin), $topTen->drivers[9]);
     }
@@ -49,7 +48,7 @@ final class TopTenTest extends TestCase
         $astonMartin = new Team(5, 'Aston Martin');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The amount of drivers in a top 10 must be equal to ten.');
+        $this->expectExceptionMessage('The amount of drivers in a top 10 must be equal to 10.');
 
         TopTen::fromArray([
             new Driver(1, 'Max Verstappen', $redBullRacing),
@@ -74,7 +73,7 @@ final class TopTenTest extends TestCase
         $williams = new Team(11, 'Williams');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The amount of drivers in a top 10 must be equal to ten.');
+        $this->expectExceptionMessage('The amount of drivers in a top 10 must be equal to 10.');
 
         TopTen::fromArray([
             new Driver(1, 'Max Verstappen', $redBullRacing),
@@ -100,7 +99,7 @@ final class TopTenTest extends TestCase
         $astonMartin = new Team(5, 'Aston Martin');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('A top 10 cannot have the same driver more than once');
+        $this->expectExceptionMessage('A top X cannot have the same driver more than once');
 
         TopTen::fromArray([
             new Driver(1, 'Max Verstappen', $redBullRacing),
@@ -125,7 +124,7 @@ final class TopTenTest extends TestCase
         $astonMartin = new Team(5, 'Aston Martin');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('A top 10 cannot contain a team more than twice');
+        $this->expectExceptionMessage('A top X cannot contain a team more than twice');
 
         TopTen::fromArray([
             new Driver(0, 'Mark Webber', $redBullRacing),

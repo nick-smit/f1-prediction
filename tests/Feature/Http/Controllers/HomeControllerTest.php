@@ -9,10 +9,7 @@ use Tests\TestCase;
 
 final class HomeControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
+    public function test_home_is_ok(): void
     {
         $testResponse = $this->get(route('home'));
 
