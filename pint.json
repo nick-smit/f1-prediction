@@ -1,6 +1,9 @@
 {
     "preset": "psr12",
     "rules": {
-        "global_namespace_import": true
+        "global_namespace_import": true,
+        "increment_style": {
+            "style": "pre"
+        }
     }
 }

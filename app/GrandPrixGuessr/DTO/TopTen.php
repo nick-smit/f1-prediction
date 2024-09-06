@@ -7,7 +7,7 @@ namespace App\GrandPrixGuessr\DTO;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 
-class TopTen
+readonly class TopTen
 {
     /**
      * @param  Driver[]  $drivers
@@ -15,7 +15,7 @@ class TopTen
      * @throws AssertionFailedException
      */
     private function __construct(
-        public readonly array $drivers,
+        public array $drivers,
     ) {
         Assertion::allIsInstanceOf($drivers, Driver::class, 'Drivers must be type of '.Driver::class);
         Assertion::count($drivers, 10, 'The amount of drivers in a top 10 must be equal to ten.');
