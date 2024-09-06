@@ -19,5 +19,6 @@ final class TeamTest extends TestCase
         $success = $team->save();
 
         $this->assertTrue($success);
+        $this->assertDatabaseCount(Team::class, 1);
     }
 }
