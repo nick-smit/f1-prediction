@@ -10,23 +10,23 @@ use RectorLaravel\Set\LaravelSetList;
 return RectorConfig::configure()
     ->withParallel()
     ->withPaths([
-        __DIR__ . '/app',
-        __DIR__ . '/bootstrap',
-        __DIR__ . '/config',
-        __DIR__ . '/database/factories',
-        __DIR__ . '/database/seeders',
-        __DIR__ . '/public',
-        __DIR__ . '/resources',
-        __DIR__ . '/routes',
-        __DIR__ . '/tests',
+        __DIR__.'/app',
+        __DIR__.'/bootstrap',
+        __DIR__.'/config',
+        __DIR__.'/database/factories',
+        __DIR__.'/database/seeders',
+        __DIR__.'/public',
+        __DIR__.'/resources',
+        __DIR__.'/routes',
+        __DIR__.'/tests',
     ])
-    ->withSkipPath(__DIR__ . '/bootstrap/cache')
-    ->withSkipPath(__DIR__ . '/resources/views/*.blade.php')
+    ->withSkipPath(__DIR__.'/bootstrap/cache')
+    ->withSkipPath(__DIR__.'/resources/views/*.blade.php')
     ->withSkip([
-        Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector::class => [__DIR__ . '/tests', __DIR__ . '/database/factories'],
-        RectorLaravel\Rector\FuncCall\ArgumentFuncCallToMethodCallRector::class => [__DIR__ . '/tests', __DIR__ . '/database/factories']
+        Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector::class => [__DIR__.'/tests', __DIR__.'/database/factories'],
+        RectorLaravel\Rector\FuncCall\ArgumentFuncCallToMethodCallRector::class => [__DIR__.'/tests', __DIR__.'/database/factories'],
     ])
-    ->withPhpSets(php83: true,)
+    ->withPhpSets(php83: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,

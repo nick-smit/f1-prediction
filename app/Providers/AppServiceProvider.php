@@ -16,14 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(OpenF1ApiClient::class, fn(Application $application): OpenF1ApiClient => $application->make(OpenF1ApiClientFactory::class)->create(['timeout' => 30, 'connect_timeout' => 30]));
+        $this->app->bind(OpenF1ApiClient::class, fn (Application $application): OpenF1ApiClient => $application->make(OpenF1ApiClientFactory::class)->create(['timeout' => 30, 'connect_timeout' => 30]));
     }
 
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        //
-    }
+    public function boot(): void {}
 }
