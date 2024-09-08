@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RaceSession> $raceSession
- * @property-read int|null $race_session_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RaceSession> $raceSessions
+ * @property-read int|null $race_sessions_count
  * @method static \Database\Factories\RaceWeekendFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend newQuery()
