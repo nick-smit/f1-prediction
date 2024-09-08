@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Models;
 
-use App\Darts\Settings\UserSettingsDTO;
-use App\Models\Game;
 use App\Models\Guess;
-use App\Models\ScoringGame;
 use App\Models\User;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +18,7 @@ final class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->assertInstanceOf(\DateTime::class, $user->email_verified_at);
+        $this->assertInstanceOf(DateTime::class, $user->email_verified_at);
     }
 
     public function test_a_user_can_have_guesses(): void
