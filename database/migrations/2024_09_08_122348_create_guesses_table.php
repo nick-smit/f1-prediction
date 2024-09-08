@@ -26,6 +26,8 @@ return new class extends Migration
             $table->foreignId('p9_id')->constrained('drivers');
             $table->foreignId('p10_id')->constrained('drivers');
             $table->timestamps();
+
+            $table->unique(['race_session_id', 'user_id']);
         });
     }
 
