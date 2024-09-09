@@ -146,16 +146,16 @@ final class TopTenTest extends TestCase
         $this->expectExceptionMessage('Drivers must be type of App\GrandPrixGuessr\DTO\Driver');
 
         TopTen::fromArray([
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
-            new stdClass,
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
+            new stdClass(),
         ]);
     }
 }

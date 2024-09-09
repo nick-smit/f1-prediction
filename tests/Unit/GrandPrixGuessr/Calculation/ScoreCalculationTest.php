@@ -10,13 +10,14 @@ use App\GrandPrixGuessr\DTO\Team;
 use App\GrandPrixGuessr\DTO\TopTen;
 use App\GrandPrixGuessr\DTO\TopThree;
 use DeepCopy\DeepCopy;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 final class ScoreCalculationTest extends TestCase
 {
     private ScoreCalculation $scoreCalculation;
 
-    #[\Override]
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

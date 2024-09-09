@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\GrandPrixGuessr\Session\SessionType;
 use App\Models\RaceWeekend;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RaceSession>
@@ -18,7 +19,7 @@ class RaceSessionFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function definition(): array
     {
         return [

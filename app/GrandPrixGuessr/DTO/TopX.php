@@ -8,12 +8,13 @@ use Assert\Assertion;
 use Assert\AssertionFailedException;
 use Countable;
 use Iterator;
+use Override;
 
 abstract class TopX implements Iterator, Countable
 {
     private int $position = 0;
 
-    #[\Override]
+    #[Override]
     abstract public function count(): int;
 
     abstract public static function fromArray(array $drivers): TopX;
@@ -40,31 +41,31 @@ abstract class TopX implements Iterator, Countable
         }
     }
 
-    #[\Override]
+    #[Override]
     public function current(): Driver
     {
         return $this->drivers[$this->position];
     }
 
-    #[\Override]
+    #[Override]
     public function next(): void
     {
         ++$this->position;
     }
 
-    #[\Override]
+    #[Override]
     public function key(): mixed
     {
         return $this->position;
     }
 
-    #[\Override]
+    #[Override]
     public function valid(): bool
     {
         return isset($this->drivers[$this->position]);
     }
 
-    #[\Override]
+    #[Override]
     public function rewind(): void
     {
         $this->position = 0;

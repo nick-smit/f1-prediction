@@ -14,6 +14,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->bind(OpenF1ApiClient::class, fn (Application $application): OpenF1ApiClient => $application->make(OpenF1ApiClientFactory::class)->create(['timeout' => 30, 'connect_timeout' => 30]));
@@ -22,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void {}
+    public function boot(): void
+    {
+    }
 }

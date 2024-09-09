@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $p8_id
  * @property int $p9_id
  * @property int $p10_id
+ * @property int $score
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Driver $p1
@@ -55,6 +56,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Guess whereP8Id($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Guess whereP9Id($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Guess whereRaceSessionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guess whereScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Guess whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Guess whereUserId($value)
  * @mixin \Illuminate\Database\Eloquent\Model

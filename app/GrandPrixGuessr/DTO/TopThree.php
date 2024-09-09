@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\GrandPrixGuessr\DTO;
 
 use Assert\AssertionFailedException;
+use Override;
 
 class TopThree extends TopX
 {
-    #[\Override]
+    #[Override]
     public function count(): int
     {
         return 3;
@@ -19,7 +20,7 @@ class TopThree extends TopX
      *
      * @throws AssertionFailedException
      */
-    #[\Override]
+    #[Override]
     public static function fromArray(array $drivers): TopThree
     {
         return new self($drivers);

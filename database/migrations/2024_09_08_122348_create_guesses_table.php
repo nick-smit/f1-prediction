@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -25,6 +24,7 @@ return new class extends Migration
             $table->foreignId('p8_id')->constrained('drivers');
             $table->foreignId('p9_id')->constrained('drivers');
             $table->foreignId('p10_id')->constrained('drivers');
+            $table->tinyInteger('score')->unsigned()->nullable();
             $table->timestamps();
 
             $table->unique(['race_session_id', 'user_id']);

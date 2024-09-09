@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Models\Driver;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DriverContract>
@@ -18,7 +19,7 @@ class DriverContractFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function definition(): array
     {
         return [

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,7 @@ use Override;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Driver $driver
  * @property-read \App\Models\Team $team
- * @method static Builder|DriverContract active()
+ * @method static Builder|DriverContract active(?\DateTimeInterface $onDate = null)
  * @method static \Database\Factories\DriverContractFactory factory($count = null, $state = [])
  * @method static Builder|DriverContract newModelQuery()
  * @method static Builder|DriverContract newQuery()
@@ -60,11 +61,11 @@ class DriverContract extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function scopeActive(Builder $query): void
+    public function scopeActive(Builder $query, DateTimeInterface $onDate = null): void
     {
-        $query->whereDate('start_date', '<=', Carbon::now())
-            ->where(function (Builder $query): void {
-                $query->whereDate('end_date', '>', Carbon::now())
+        $query->whereDate('start_date', '<=', $onDate ?? Carbon::now()->toDateTime())
+            ->where(function (Builder $query) use ($onDate): void {
+                $query->whereDate('end_date', '>', $onDate ?? Carbon::now()->toDateTime())
                     ->orWhereNull('end_date');
             });
     }

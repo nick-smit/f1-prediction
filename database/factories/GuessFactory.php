@@ -8,6 +8,7 @@ use App\Models\Driver;
 use App\Models\RaceSession;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Guess>
@@ -19,7 +20,7 @@ class GuessFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function definition(): array
     {
         return [
@@ -35,6 +36,7 @@ class GuessFactory extends Factory
             'p8_id' => Driver::factory(),
             'p9_id' => Driver::factory(),
             'p10_id' => Driver::factory(),
+            'score' => null,
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\GrandPrixGuessr\Data;
+namespace Tests\Unit\GrandPrixGuessr\Data\DriverDTOMap;
 
-use App\GrandPrixGuessr\Data\DriverDTOMap;
+use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMap;
 use App\GrandPrixGuessr\DTO\Driver;
 use App\GrandPrixGuessr\DTO\Team;
 use Assert\InvalidArgumentException;
@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 final class DriverDTOMapTest extends TestCase
 {
-
     public function test_a_driver_dto_map_can_be_created(): void
     {
         $drivers = [

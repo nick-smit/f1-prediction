@@ -57,4 +57,36 @@ final class DriverContractTest extends TestCase
         $this->assertEquals(new DateTime('01-01-2024'), $second->start_date);
         $this->assertEquals(new DateTime('31-12-2024'), $second->end_date);
     }
+
+    public function test_active_scope_with_specified_date(): void
+    {
+        DriverContract::factory()
+            ->count(5)
+            ->sequence(
+                ['start_date' => new DateTime('01-01-2024'), 'end_date' => null], // Should be found
+                ['start_date' => new DateTime('01-01-2024'), 'end_date' => new DateTime('31-12-2024')], // Should not be found
+                ['start_date' => new DateTime('01-01-2025'), 'end_date' => null], // Should be found
+                ['start_date' => new DateTime('01-01-2025'), 'end_date' => new DateTime('31-12-2025')], // Should be found
+                ['start_date' => new DateTime('01-01-2023'), 'end_date' => new DateTime('31-12-2023')], // Should not be found
+            )->create();
+
+        $foundContracts = DriverContract::active(new DateTime('01-10-2025'))->get();
+
+        $this->assertCount(3, $foundContracts);
+
+        /** @var DriverContract $first */
+        $first = $foundContracts->shift();
+        $this->assertEquals(new DateTime('01-01-2024'), $first->start_date);
+        $this->assertNull($first->end_date);
+
+        /** @var DriverContract $second */
+        $second = $foundContracts->shift();
+        $this->assertEquals(new DateTime('01-01-2025'), $second->start_date);
+        $this->assertNull($second->end_date);
+
+        /** @var DriverContract $third */
+        $third = $foundContracts->shift();
+        $this->assertEquals(new DateTime('01-01-2025'), $third->start_date);
+        $this->assertEquals(new DateTime('31-12-2025'), $third->end_date);
+    }
 }

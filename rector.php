@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
+use RectorLaravel\Rector\If_\ThrowIfRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -25,6 +26,7 @@ return RectorConfig::configure()
     ->withSkip([
         Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector::class => [__DIR__.'/tests', __DIR__.'/database/factories'],
         RectorLaravel\Rector\FuncCall\ArgumentFuncCallToMethodCallRector::class => [__DIR__.'/tests', __DIR__.'/database/factories'],
+        ThrowIfRector::class,
     ])
     ->withPhpSets(php83: true)
     ->withPreparedSets(
