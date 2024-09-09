@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\GrandPrixGuessr\Data\DriverDTOMap;
+namespace Tests\Feature\GrandPrixGuessr\Data\DriverDTOMap;
 
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMapFactory;
 use App\Models\Driver;
