@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use NickSmit\OpenF1Api\Client\OpenF1ApiClient;
 use NickSmit\OpenF1Api\Factory\OpenF1ApiClientFactory;
 
@@ -25,5 +26,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Password::defaults(function () {
+            if ($this->app->environment('local')) {
+                // @codeCoverageIgnoreStart
+                return Password::min(3);
+                // @codeCoverageIgnoreEnd
+            }
+
+            return Password::min(8)
+                ->mixedCase()
+                ->numbers()
+                ->uncompromised();
+        });
     }
 }

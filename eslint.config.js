@@ -5,8 +5,10 @@ import pluginReact from 'eslint-plugin-react';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
+    pluginJs.configs.recommended,
+    ...tseslint.configs.recommended,
     {
-        files: ['resources/js/**/*.{ts,tsx}'],
+        files: ['**/*.{ts,tsx}'],
         languageOptions: {
             globals: globals.browser,
             parserOptions: {
@@ -16,10 +18,8 @@ export default [
             },
         },
         plugins: {
-            js: pluginJs.configs.recommended,
-            ts: tseslint.configs.recommended,
-            react: pluginReact.configs.flat.recommended,
-            prettier: eslintConfigPrettier,
+            pluginReact,
+            eslintConfigPrettier,
         },
     },
 ];
