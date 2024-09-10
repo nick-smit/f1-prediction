@@ -1,0 +1,19 @@
+Todo:
+
+- Admin interface
+    - Driver management
+    - Team management
+    - Driver contract management
+    - Calendar management
+        - Race session management
+- Guessing interface
+    - Guess the next session
+    - View previous guessed sessions and scores
+- Highscores
+- Progressive web app
+- Push notifications
+- My Account
+    - Change password
+    - Change e-mail address
+    - Delete account
+    - Avatar?
