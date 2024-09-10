@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Foundation\Bus\Dispatchable;
+use SensitiveParameter;
 
 class RegisterUserJob
 {
@@ -20,10 +21,9 @@ class RegisterUserJob
     public function __construct(
         private readonly string $username,
         private readonly string $email,
-        #[\SensitiveParameter]
+        #[SensitiveParameter]
         private readonly string $password
-    )
-    {
+    ) {
     }
 
     /**

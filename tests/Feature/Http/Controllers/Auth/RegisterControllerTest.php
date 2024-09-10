@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Actions\Auth\RegisterUserAction;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 final class RegisterControllerTest extends TestCase
@@ -26,7 +26,7 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_guest_can_register(): void
     {
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->post(route('register'), [
             'name' => 'John Doe',
@@ -35,11 +35,11 @@ final class RegisterControllerTest extends TestCase
             'password_confirmation' => 'Str0ngP4ssw0rd!sRequ!red',
         ]);
 
-        $response->assertRedirect(route('home'));
+        $response->assertRedirect(route('verification.show'));
 
         $this->assertDatabaseCount(User::class, 1);
         /** @var User $user */
-        $user = \App\Models\User::query()->first();
+        $user = User::query()->first();
         $this->assertSame('John Doe', $user->name);
         $this->assertSame('john@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
@@ -48,7 +48,7 @@ final class RegisterControllerTest extends TestCase
 
         $this->assertAuthenticated();
 
-        \Illuminate\Support\Facades\Notification::assertSentTo([$user], VerifyEmail::class);
+        Notification::assertSentTo([$user], VerifyEmail::class);
     }
 
     public function test_an_authenticated_user_cannot_register(): void
@@ -56,20 +56,20 @@ final class RegisterControllerTest extends TestCase
         $user = User::factory()->create();
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->actingAs($user)->post(route('register'));
 
         $response->assertRedirect(route('home'));
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_username_cannot_be_blank(): void
     {
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'name' => '',
@@ -78,13 +78,13 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['name' => 'The name field is required.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_username_must_be_a_string(): void
     {
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'name' => 123,
@@ -93,7 +93,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['name' => 'The name field must be a string.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_username_must_be_unique(): void
@@ -101,7 +101,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['name' => 'John Doe']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'name' => 'John Doe',
@@ -110,13 +110,13 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['name' => 'The name has already been taken.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_email_cannot_be_blank(): void
     {
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'email' => '',
@@ -125,13 +125,13 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['email' => 'The email field is required.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_username_must_be_a_valid_email_address(): void
     {
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'email' => 'invalid-email-address',
@@ -140,7 +140,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['email' => 'The email field must be a valid email address.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_email_must_be_unique(): void
@@ -148,7 +148,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'email' => 'john@example.com',
@@ -157,7 +157,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['email' => 'The email has already been taken.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_cannot_be_empty(): void
@@ -165,7 +165,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'password' => '',
@@ -174,7 +174,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The password field is required.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_must_have_at_least_8_characters(): void
@@ -182,7 +182,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'password' => 'A1!a',
@@ -191,7 +191,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The password field must be at least 8 characters.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_must_have_at_least_1_lowercase_character(): void
@@ -199,7 +199,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'password' => '12345678!A',
@@ -208,7 +208,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The password field must contain at least one uppercase and one lowercase letter.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_must_have_at_least_1_uppercase_character(): void
@@ -216,7 +216,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'password' => '12345678!a',
@@ -225,7 +225,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The password field must contain at least one uppercase and one lowercase letter.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_must_have_at_least_1_number_character(): void
@@ -233,7 +233,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'password' => 'ABCDEFGH!a',
@@ -242,7 +242,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The password field must contain at least one number.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_must_not_be_compromised(): void
@@ -250,7 +250,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $response = $this->postJson(route('register'), [
             'password' => 'Abcd1234!',
@@ -259,7 +259,7 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The given password has appeared in a data leak. Please choose a different password.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 
     public function test_a_password_must_equal_the_password_confirmation(): void
@@ -267,7 +267,7 @@ final class RegisterControllerTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         Bus::fake();
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $passwordOne = 'tjFR2fVBALqjFfzT';
         $passwordTwo = 'X4IyQPvDjoDQFg59';
@@ -280,6 +280,6 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors(['password' => 'The password field confirmation does not match.']);
 
         Bus::assertNothingDispatched();
-        \Illuminate\Support\Facades\Notification::assertNothingSent();
+        Notification::assertNothingSent();
     }
 }

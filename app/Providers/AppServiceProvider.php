@@ -9,13 +9,14 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use NickSmit\OpenF1Api\Client\OpenF1ApiClient;
 use NickSmit\OpenF1Api\Factory\OpenF1ApiClientFactory;
+use Override;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    #[\Override]
+    #[Override]
     public function register(): void
     {
         $this->app->bind(OpenF1ApiClient::class, fn (Application $application): OpenF1ApiClient => $application->make(OpenF1ApiClientFactory::class)->create(['timeout' => 30, 'connect_timeout' => 30]));

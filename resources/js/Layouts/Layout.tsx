@@ -21,6 +21,7 @@ import LinkBridge from '@/Components/LinkBridge';
 import { Icon } from '@chakra-ui/icons';
 import MenuDrawer from '@/Layouts/Partials/MenuDrawer';
 import { RiMenuLine } from 'react-icons/ri';
+import useCheckVerified from '@/hooks/useCheckVerified';
 
 type Props = PropsWithChildren<{
     controlledPadding?: boolean;
@@ -36,6 +37,8 @@ export default function Layout({
     const menuDrawerBtnRef = useRef<HTMLButtonElement>(null);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    useCheckVerified();
 
     return (
         <Stack spacing={2} minH={'100vh'}>
