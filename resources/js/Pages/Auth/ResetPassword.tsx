@@ -1,10 +1,8 @@
+import { type ReactElement } from 'react';
 import { Head } from '@inertiajs/react';
 import Layout from '@/Layouts/Layout';
 import {
-    Box,
     Button,
-    Checkbox,
-    Flex,
     FormControl,
     FormErrorMessage,
     FormLabel,
@@ -13,37 +11,34 @@ import {
     Stack,
     Text,
 } from '@chakra-ui/react';
-import LinkBridge from '@/Components/LinkBridge';
 import AuthBox from '@/Components/AuthBox';
-import useLoginForm from '@/Pages/Auth/hooks/useLoginForm';
-import { type ReactElement } from 'react';
+import useResetPasswordForm from '@/Pages/Auth/hooks/useResetPasswordForm';
 
-export default function Login({ status }: { status?: string }): ReactElement {
-    const { data, errors, change, submit, processing } = useLoginForm();
+export default function ResetPassword({
+    token,
+    email,
+}: {
+    token: string;
+    email: string;
+}): ReactElement {
+    const { data, errors, change, submit, processing } = useResetPasswordForm(
+        token,
+        email
+    );
 
     return (
         <Layout>
-            <Head title="Sign in" />
+            <Head title="Reset Password" />
 
             <Stack spacing={4}>
-                <Box as={'header'}>
-                    <Heading>Sign in</Heading>
-                </Box>
+                <Heading>Reset Password</Heading>
 
                 <AuthBox as={'main'}>
                     <Stack spacing={4}>
                         <Text>
-                            Sign in to your account to access your games and
-                            statistics. Don't have an account yet?{' '}
-                            <LinkBridge
-                                variant={'highlight'}
-                                href={route('register')}
-                            >
-                                Sign up
-                            </LinkBridge>{' '}
-                            for free!
+                            Enter your email address and new password to reset
+                            your password.
                         </Text>
-                        {status !== null ? <Text>{status}</Text> : null}
                         <form onSubmit={submit}>
                             <Stack spacing={4}>
                                 <FormControl
@@ -76,31 +71,31 @@ export default function Login({ status }: { status?: string }): ReactElement {
                                         {errors.password}
                                     </FormErrorMessage>
                                 </FormControl>
-                                <Checkbox
-                                    name={'remember'}
-                                    checked={data.remember}
-                                    onChange={change}
+                                <FormControl
+                                    isRequired
+                                    isInvalid={Boolean(
+                                        errors.password_confirmation
+                                    )}
                                 >
-                                    Remember me
-                                </Checkbox>
-                                <Flex
-                                    direction={'row'}
-                                    align={'center'}
-                                    justify={'flex-end'}
-                                    gap={'2rem'}
+                                    <FormLabel>Confirm Password</FormLabel>
+                                    <Input
+                                        type={'password'}
+                                        name={'password_confirmation'}
+                                        value={data.password_confirmation}
+                                        onChange={change}
+                                    />
+                                    <FormErrorMessage>
+                                        {errors.password_confirmation}
+                                    </FormErrorMessage>
+                                </FormControl>
+                                <Button
+                                    type={'submit'}
+                                    variant={'primary'}
+                                    isLoading={processing}
+                                    disabled={processing}
                                 >
-                                    <LinkBridge href={route('forgot-password')}>
-                                        Forgot your password?
-                                    </LinkBridge>
-                                    <Button
-                                        variant={'primary'}
-                                        type={'submit'}
-                                        isLoading={processing}
-                                        disabled={processing}
-                                    >
-                                        Sign in
-                                    </Button>
-                                </Flex>
+                                    Reset Password
+                                </Button>
                             </Stack>
                         </form>
                     </Stack>

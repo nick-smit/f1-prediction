@@ -66,7 +66,7 @@ final class RegisterControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_a_username_cannot_be_blank(): void
+    public function test_a_registration_username_cannot_be_blank(): void
     {
         Bus::fake();
         Notification::fake();
@@ -81,7 +81,7 @@ final class RegisterControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_a_username_must_be_a_string(): void
+    public function test_a_registration_username_must_be_a_string(): void
     {
         Bus::fake();
         Notification::fake();
@@ -96,7 +96,7 @@ final class RegisterControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_a_username_must_be_unique(): void
+    public function test_a_registration_username_must_be_unique(): void
     {
         User::factory()->create(['name' => 'John Doe']);
 
@@ -113,7 +113,7 @@ final class RegisterControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_a_email_cannot_be_blank(): void
+    public function test_an_email_address_cannot_be_blank(): void
     {
         Bus::fake();
         Notification::fake();
@@ -128,7 +128,7 @@ final class RegisterControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_a_username_must_be_a_valid_email_address(): void
+    public function test_an_email_address_must_be_a_valid_email_address(): void
     {
         Bus::fake();
         Notification::fake();
@@ -143,7 +143,7 @@ final class RegisterControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_a_email_must_be_unique(): void
+    public function test_an_email_address_must_be_unique(): void
     {
         User::factory()->create(['email' => 'john@example.com']);
 
@@ -162,8 +162,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_cannot_be_empty(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
@@ -179,8 +177,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_must_have_at_least_8_characters(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
@@ -196,8 +192,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_must_have_at_least_1_lowercase_character(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
@@ -213,8 +207,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_must_have_at_least_1_uppercase_character(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
@@ -230,8 +222,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_must_have_at_least_1_number_character(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
@@ -247,8 +237,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_must_not_be_compromised(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
@@ -264,8 +252,6 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_password_must_equal_the_password_confirmation(): void
     {
-        User::factory()->create(['email' => 'john@example.com']);
-
         Bus::fake();
         Notification::fake();
 
