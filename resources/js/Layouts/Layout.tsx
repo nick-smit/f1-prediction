@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactElement, useRef } from 'react';
+import React, { PropsWithChildren, ReactElement, useRef } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { router, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
@@ -23,6 +23,7 @@ import { Icon } from '@chakra-ui/icons';
 import MenuDrawer from '@/Layouts/Partials/MenuDrawer';
 import { RiMenuLine } from 'react-icons/ri';
 import useCheckVerified from '@/hooks/useCheckVerified';
+import MenuItems from '@/Layouts/Partials/MenuItems';
 
 type Props = PropsWithChildren<{
     controlledPadding?: boolean;
@@ -42,7 +43,7 @@ export default function Layout({
     useCheckVerified();
 
     return (
-        <Stack spacing={2} minH={'100vh'}>
+        <Stack spacing={0} minH={'100vh'}>
             <Box as={'nav'} bg={useColorModeValue('gray.50', 'gray.700')}>
                 <Flex my={1} mx={2} align={'center'} justify={'space-between'}>
                     <HStack spacing={2}>
@@ -96,14 +97,24 @@ export default function Layout({
                     )}
                 </Flex>
             </Box>
-            <Flex
-                flexGrow={1}
-                px={controlledPadding ? undefined : { base: 2, md: 12 }}
-                justify={'center'}
-                w={'100%'}
-            >
-                {children}
-            </Flex>
+            <HStack flexGrow={1} alignItems={'stretch'}>
+                <Box
+                    as={'nav'}
+                    bg={useColorModeValue('gray.50', 'gray.700')}
+                    minW={200}
+                    display={{ md: 'block', base: 'none' }}
+                >
+                    <MenuItems user={user} />
+                </Box>
+                <Flex
+                    flexGrow={1}
+                    px={controlledPadding ? undefined : { base: 2, md: 12 }}
+                    justify={'center'}
+                    w={'100%'}
+                >
+                    {children}
+                </Flex>
+            </HStack>
             <MenuDrawer
                 isOpen={isOpen}
                 onClose={onClose}

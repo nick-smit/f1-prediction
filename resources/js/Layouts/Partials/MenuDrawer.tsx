@@ -8,9 +8,9 @@ import {
     DrawerOverlay,
     Stack,
 } from '@chakra-ui/react';
-import LinkBridge from '@/Components/LinkBridge';
 import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import MenuItems from '@/Layouts/Partials/MenuItems';
 
 interface Props {
     isOpen: boolean;
@@ -40,17 +40,7 @@ export default function MenuDrawer({
                 <DrawerHeader>Menu</DrawerHeader>
                 <DrawerBody>
                     <Stack>
-                        <LinkBridge href={route('home')}>My Darts</LinkBridge>
-                        {user === null ? (
-                            <>
-                                <LinkBridge href={route('login')}>
-                                    Sign in
-                                </LinkBridge>
-                                <LinkBridge href={route('register')}>
-                                    Sign up
-                                </LinkBridge>
-                            </>
-                        ) : null}
+                        <MenuItems user={user} />
                     </Stack>
                 </DrawerBody>
             </DrawerContent>
