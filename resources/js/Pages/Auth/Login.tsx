@@ -3,6 +3,7 @@ import Layout from '@/Layouts/Layout';
 import {
     Box,
     Button,
+    Checkbox,
     Flex,
     FormControl,
     FormErrorMessage,
@@ -12,53 +13,39 @@ import {
     Stack,
     Text,
 } from '@chakra-ui/react';
-import AuthBox from '@/Components/AuthBox';
-// import LinkBridge from "@/Components/LinkBridge";
-import useRegisterForm from '@/Pages/Auth/hooks/useRegisterForm';
-import { type ReactElement } from 'react';
 import LinkBridge from '@/Components/LinkBridge';
+import AuthBox from '@/Components/AuthBox';
+import useLoginForm from '@/Pages/Auth/hooks/useLoginForm';
+import { type ReactElement } from 'react';
 
-export default function Register(): ReactElement {
-    const { data, errors, change, submit, processing } = useRegisterForm();
+export default function Login({ status }: { status?: string }): ReactElement {
+    const { data, errors, change, submit, processing } = useLoginForm();
 
     return (
         <Layout>
-            <Head title="Sign up" />
+            <Head title="Sign in" />
 
             <Stack spacing={4}>
                 <Box as={'header'}>
-                    <Heading>Sign up</Heading>
+                    <Heading>Sign in</Heading>
                 </Box>
 
                 <AuthBox as={'main'}>
                     <Stack spacing={4}>
                         <Text>
-                            Create an account to get playing for free. If you
-                            already have an account, you can{' '}
+                            Sign in to your account to access your games and
+                            statistics. Don't have an account yet?{' '}
                             <LinkBridge
                                 variant={'highlight'}
-                                href={route('login')}
+                                href={route('register')}
                             >
-                                sign in
+                                Sign up
                             </LinkBridge>{' '}
-                            instead.
+                            for free!
                         </Text>
+                        {status !== null ? <Text>{status}</Text> : null}
                         <form onSubmit={submit}>
                             <Stack spacing={4}>
-                                <FormControl
-                                    isRequired
-                                    isInvalid={Boolean(errors.name)}
-                                >
-                                    <FormLabel>Nickname</FormLabel>
-                                    <Input
-                                        name={'name'}
-                                        value={data.name}
-                                        onChange={change}
-                                    />
-                                    <FormErrorMessage>
-                                        {errors.name}
-                                    </FormErrorMessage>
-                                </FormControl>
                                 <FormControl
                                     isRequired
                                     isInvalid={Boolean(errors.email)}
@@ -89,39 +76,29 @@ export default function Register(): ReactElement {
                                         {errors.password}
                                     </FormErrorMessage>
                                 </FormControl>
-                                <FormControl
-                                    isRequired
-                                    isInvalid={Boolean(
-                                        errors.password_confirmation
-                                    )}
+                                <Checkbox
+                                    name={'remember'}
+                                    checked={data.remember}
+                                    onChange={change}
                                 >
-                                    <FormLabel>Confirm password</FormLabel>
-                                    <Input
-                                        type={'password'}
-                                        name={'password_confirmation'}
-                                        value={data.password_confirmation}
-                                        onChange={change}
-                                    />
-                                    <FormErrorMessage>
-                                        {errors.password_confirmation}
-                                    </FormErrorMessage>
-                                </FormControl>
+                                    Remember me
+                                </Checkbox>
                                 <Flex
                                     direction={'row'}
                                     align={'center'}
                                     justify={'flex-end'}
                                     gap={'2rem'}
                                 >
-                                    <LinkBridge href={route('login')}>
-                                        Already registered?
-                                    </LinkBridge>
+                                    {/*<LinkBridge href={route("password.request")}>*/}
+                                    {/*  Forgot your password?*/}
+                                    {/*</LinkBridge>*/}
                                     <Button
                                         variant={'primary'}
                                         type={'submit'}
                                         isLoading={processing}
                                         disabled={processing}
                                     >
-                                        Sign up
+                                        Sign in
                                     </Button>
                                 </Flex>
                             </Stack>

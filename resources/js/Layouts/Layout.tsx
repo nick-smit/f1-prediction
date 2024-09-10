@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactElement, useRef } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import {
     Avatar,
@@ -12,6 +12,7 @@ import {
     Menu,
     MenuButton,
     MenuDivider,
+    MenuItem,
     MenuList,
     Stack,
     useColorModeValue,
@@ -74,13 +75,13 @@ export default function Layout({
                                 <MenuDivider />
                                 {/*<MenuLink href={route("settings.index")}>Settings</MenuLink>*/}
                                 <MenuDivider />
-                                {/*<MenuItem*/}
-                                {/*  onClick={() => {*/}
-                                {/*    router.post(route("logout"));*/}
-                                {/*  }}*/}
-                                {/*>*/}
-                                {/*  Sign off*/}
-                                {/*</MenuItem>*/}
+                                <MenuItem
+                                    onClick={() => {
+                                        router.post(route('logout'));
+                                    }}
+                                >
+                                    Sign off
+                                </MenuItem>
                             </MenuList>
                         </Menu>
                     ) : (
@@ -88,7 +89,9 @@ export default function Layout({
                             <LinkBridge href={route('register')}>
                                 Sign up
                             </LinkBridge>
-                            {/*<LinkBridge href={route("login")}>Sign in</LinkBridge>{" "}*/}
+                            <LinkBridge href={route('login')}>
+                                Sign in
+                            </LinkBridge>{' '}
                         </HStack>
                     )}
                 </Flex>

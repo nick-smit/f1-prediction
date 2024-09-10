@@ -1,7 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { type ReactElement, useState } from 'react';
 import Layout from '@/Layouts/Layout';
-import { Button, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react';
 import AuthBox from '@/Components/AuthBox';
 
 export default function VerifyEmail({
@@ -56,13 +56,13 @@ export default function VerifyEmail({
                             >
                                 Resend Verification Email
                             </Button>
-                            {/*<Link*/}
-                            {/*  onClick={() => {*/}
-                            {/*    router.post(route("logout"));*/}
-                            {/*  }}*/}
-                            {/*>*/}
-                            {/*  Sign off*/}
-                            {/*</Link>*/}
+                            <Link
+                                onClick={() => {
+                                    router.post(route('logout'));
+                                }}
+                            >
+                                Sign off
+                            </Link>
                         </Flex>
                     </Stack>
                 </AuthBox>

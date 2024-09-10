@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\AuthenticationController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
@@ -13,7 +14,8 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store']);
 
-    Route::get('/login')->name('login');
+    Route::get('/login', [AuthenticationController::class, 'show'])->name('login');
+    Route::post('/login', [AuthenticationController::class, 'login']);
 });
 
 Route::middleware('auth')->group(static function (): void {
@@ -25,4 +27,6 @@ Route::middleware('auth')->group(static function (): void {
     Route::post('verify-email/verification-notification', [EmailVerificationController::class, 'send'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
+
+    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 });

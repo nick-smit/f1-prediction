@@ -9,6 +9,8 @@ import {
     Stack,
 } from '@chakra-ui/react';
 import LinkBridge from '@/Components/LinkBridge';
+import { usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
 
 interface Props {
     isOpen: boolean;
@@ -21,9 +23,9 @@ export default function MenuDrawer({
     onClose,
     finalFocusRef,
 }: Props): ReactElement {
-    // const {
-    //   auth: { user },
-    // } = usePage<PageProps>().props;
+    const {
+        auth: { user },
+    } = usePage<PageProps>().props;
 
     return (
         <Drawer
@@ -38,19 +40,17 @@ export default function MenuDrawer({
                 <DrawerHeader>Menu</DrawerHeader>
                 <DrawerBody>
                     <Stack>
-                        {/*<LinkBridge href={route("home")}>My Darts</LinkBridge>*/}
-                        {/*{user === null ? (*/}
-                        {/*  <>*/}
-                        {/*    <LinkBridge href={route("login")}>Sign in</LinkBridge>*/}
-                        <LinkBridge href={route('register')}>
-                            Sign up
-                        </LinkBridge>
-                        {/*  </>*/}
-                        {/*) : (*/}
-                        {/*  <>*/}
-                        {/*    <LinkBridge href={route("dashboard")}>Dashboard</LinkBridge>*/}
-                        {/*  </>*/}
-                        {/*)}*/}
+                        <LinkBridge href={route('home')}>My Darts</LinkBridge>
+                        {user === null ? (
+                            <>
+                                <LinkBridge href={route('login')}>
+                                    Sign in
+                                </LinkBridge>
+                                <LinkBridge href={route('register')}>
+                                    Sign up
+                                </LinkBridge>
+                            </>
+                        ) : null}
                     </Stack>
                 </DrawerBody>
             </DrawerContent>
