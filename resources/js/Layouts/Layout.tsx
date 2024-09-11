@@ -108,7 +108,7 @@ export default function Layout({
                 </Box>
                 <Flex
                     flexGrow={1}
-                    px={controlledPadding ? undefined : { base: 2, md: 12 }}
+                    p={controlledPadding ? undefined : { base: 2, md: 12 }}
                     justify={'center'}
                     w={'100%'}
                 >

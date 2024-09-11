@@ -1,5 +1,5 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
-import Button from '@/Config/Theme/Button';
+import { Button, IconButton } from '@/Config/Theme/Button';
 import Link from '@/Config/Theme/Link';
 import Stat from '@/Config/Theme/Stat';
 
@@ -27,6 +27,7 @@ const theme = extendTheme({
     },
     components: {
         Button,
+        IconButton,
         Link,
         Stat,
     },

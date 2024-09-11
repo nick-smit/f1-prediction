@@ -4,31 +4,35 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\RaceWeekendFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Override;
 
 /**
  *
  *
  * @property int $id
- * @property \Illuminate\Support\Carbon $start_date
+ * @property Carbon $start_date
  * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RaceSession> $raceSessions
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, RaceSession> $raceSessions
  * @property-read int|null $race_sessions_count
- * @method static \Database\Factories\RaceWeekendFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend query()
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend whereStartDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RaceWeekend whereUpdatedAt($value)
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @method static RaceWeekendFactory factory($count = null, $state = [])
+ * @method static Builder|RaceWeekend newModelQuery()
+ * @method static Builder|RaceWeekend newQuery()
+ * @method static Builder|RaceWeekend query()
+ * @method static Builder|RaceWeekend whereCreatedAt($value)
+ * @method static Builder|RaceWeekend whereId($value)
+ * @method static Builder|RaceWeekend whereName($value)
+ * @method static Builder|RaceWeekend whereStartDate($value)
+ * @method static Builder|RaceWeekend whereUpdatedAt($value)
+ * @mixin Model
  */
 class RaceWeekend extends Model
 {

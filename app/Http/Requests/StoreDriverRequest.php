@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\Rules\Unique;
 
-class RegisterRequest extends FormRequest
+class StoreDriverRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -27,9 +25,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', new Unique('users', 'name')],
-            'email' => ['required', 'email', new Unique('users', 'email')],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+            //
         ];
     }
 }

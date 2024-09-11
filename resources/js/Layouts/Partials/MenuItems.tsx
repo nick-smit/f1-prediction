@@ -1,6 +1,7 @@
 import { type ReactElement } from 'react';
 import LinkBridge from '@/Components/LinkBridge';
 import { User } from '@/types';
+import { Heading, Stack } from '@chakra-ui/react';
 
 type Props = {
     user: User | null;
@@ -8,7 +9,7 @@ type Props = {
 
 export default function MenuItems({ user }: Props): ReactElement {
     return (
-        <>
+        <Stack>
             <LinkBridge href={route('home')}>Home</LinkBridge>
             {user === null ? (
                 <>
@@ -16,6 +17,14 @@ export default function MenuItems({ user }: Props): ReactElement {
                     <LinkBridge href={route('register')}>Sign up</LinkBridge>
                 </>
             ) : null}
-        </>
+            {user?.is_admin ? (
+                <>
+                    <Heading size={'md'}>Admin</Heading>
+                    <LinkBridge href={route('admin.drivers.index')}>
+                        Drivers
+                    </LinkBridge>
+                </>
+            ) : null}
+        </Stack>
     );
 }

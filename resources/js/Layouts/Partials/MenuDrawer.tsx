@@ -6,7 +6,6 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerOverlay,
-    Stack,
 } from '@chakra-ui/react';
 import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
@@ -39,9 +38,7 @@ export default function MenuDrawer({
                 <DrawerCloseButton />
                 <DrawerHeader>Menu</DrawerHeader>
                 <DrawerBody>
-                    <Stack>
-                        <MenuItems user={user} />
-                    </Stack>
+                    <MenuItems user={user} />
                 </DrawerBody>
             </DrawerContent>
         </Drawer>

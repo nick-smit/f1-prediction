@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Database\Factories\DriverContractFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,10 +23,10 @@ use Override;
  * @property \Illuminate\Support\Carbon|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Driver $driver
- * @property-read \App\Models\Team $team
- * @method static Builder|DriverContract active(?\DateTimeInterface $onDate = null)
- * @method static \Database\Factories\DriverContractFactory factory($count = null, $state = [])
+ * @property-read Driver $driver
+ * @property-read Team $team
+ * @method static Builder|DriverContract active(?DateTimeInterface $onDate = null)
+ * @method static DriverContractFactory factory($count = null, $state = [])
  * @method static Builder|DriverContract newModelQuery()
  * @method static Builder|DriverContract newQuery()
  * @method static Builder|DriverContract query()
@@ -36,7 +37,7 @@ use Override;
  * @method static Builder|DriverContract whereStartDate($value)
  * @method static Builder|DriverContract whereTeamId($value)
  * @method static Builder|DriverContract whereUpdatedAt($value)
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 class DriverContract extends Model
 {
