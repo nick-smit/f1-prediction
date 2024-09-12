@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\StoreDriverRequest;
-use App\Http\Requests\UpdateDriverRequest;
+use App\Http\Requests\DriverRequest;
 use App\Models\Driver;
 use App\Models\DriverContract;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\ResponseFactory;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class DriverManagerController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $query = Driver::with('contracts', 'contracts.team')
             ->whereLike('name', '%' . $request->query('s') . '%');
@@ -59,48 +61,39 @@ class DriverManagerController
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): void
+    public function create(): Response
     {
-        //
+        return Inertia::render('Admin/Drivers/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDriverRequest $request): void
+    public function store(DriverRequest $request, ResponseFactory $responseFactory): RedirectResponse
     {
-        //
-    }
+        $driver = new Driver($request->validated());
+        $driver->save();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Driver $driver): void
-    {
-        //
+        return $responseFactory->redirectToRoute('admin.drivers.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Driver $driver): void
+    public function edit(Driver $driver): Response
     {
-        //
+        return Inertia::render('Admin/Drivers/Edit', [
+            'driver' => $driver,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDriverRequest $request, Driver $driver): void
+    public function update(DriverRequest $request, Driver $driver, ResponseFactory $responseFactory): RedirectResponse
     {
-        //
-    }
+        $driver->update($request->validated());
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Driver $driver): void
-    {
-        //
+        return $responseFactory->redirectToRoute('admin.drivers.index');
     }
 }

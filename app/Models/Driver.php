@@ -38,6 +38,11 @@ class Driver extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'number',
+        'name'
+    ];
+
     public function contracts(): HasMany
     {
         return $this->hasMany(DriverContract::class);

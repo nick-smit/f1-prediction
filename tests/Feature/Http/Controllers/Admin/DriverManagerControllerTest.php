@@ -104,4 +104,226 @@ final class DriverManagerControllerTest extends TestCase
             $assertableInertia->has('drivers.data', 1);
         });
     }
+
+    public function test_the_driver_edit_form_can_be_shown(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('admin.drivers.edit', ['driver' => $driver->id]));
+
+        $response->assertOk();
+        $response->assertInertia(function (AssertableInertia $assertableInertia) use ($driver): void {
+            $assertableInertia->component('Admin/Drivers/Edit');
+            $assertableInertia->where('driver', $driver->toArray());
+        });
+    }
+
+    public function test_an_admin_can_update_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create(['name' => 'old name', 'number' => 1]);
+
+        $response = $this->actingAs($user)->put(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'name' => 'new name',
+            'number' => 99
+        ]);
+
+        $response->assertRedirectToRoute('admin.drivers.index');
+
+        $driver = $driver->refresh();
+        $this->assertSame('new name', $driver->name);
+        $this->assertSame(99, $driver->number);
+    }
+
+    public function test_the_driver_number_is_required_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'number' => '',
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field is required.']);
+    }
+
+    public function test_the_driver_number_must_be_a_number_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'number' => 'not a number',
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field must be an integer.']);
+    }
+
+    public function test_the_driver_number_must_be_above_0_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'number' => 0,
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field must be between 1 and 99.']);
+    }
+
+    public function test_the_driver_number_must_be_below_100_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'number' => 100,
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field must be between 1 and 99.']);
+    }
+
+    public function test_the_driver_name_is_required_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'name' => '',
+        ]);
+
+        $response->assertJsonValidationErrors(['name' => 'The name field is required.']);
+    }
+
+    public function test_the_driver_name_must_be_a_string_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'name' => 123,
+        ]);
+
+        $response->assertJsonValidationErrors(['name' => 'The name field must be a string.']);
+    }
+
+    public function test_the_driver_name_must_be_unique_when_updating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        Driver::factory()->create(['name' => 'John Doe']);
+        $driver = Driver::factory()->create();
+
+        $response = $this->actingAs($user)->putJson(route('admin.drivers.update', ['driver' => $driver->id]), [
+            'name' => 'John Doe',
+        ]);
+
+        $response->assertJsonValidationErrors(['name' => 'The name has already been taken.']);
+    }
+
+    public function test_the_driver_create_form_can_be_shown(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->get(route('admin.drivers.create'));
+
+        $response->assertOk();
+        $response->assertInertia(function (AssertableInertia $assertableInertia): void {
+            $assertableInertia->component('Admin/Drivers/Create');
+        });
+    }
+
+    public function test_an_admin_can_create_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->post(route('admin.drivers.store'), [
+            'name' => 'John Doe',
+            'number' => 1
+        ]);
+
+        $response->assertRedirectToRoute('admin.drivers.index');
+        $this->assertDatabaseCount(Driver::class, 1);
+        $driver = Driver::query()->first();
+        $this->assertSame('John Doe', $driver->name);
+        $this->assertSame(1, $driver->number);
+    }
+
+    public function test_the_driver_number_is_required_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'number' => '',
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field is required.']);
+    }
+
+    public function test_the_driver_number_must_be_a_number_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'number' => 'not a number',
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field must be an integer.']);
+    }
+
+    public function test_the_driver_number_must_be_above_0_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'number' => 0,
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field must be between 1 and 99.']);
+    }
+
+    public function test_the_driver_number_must_be_below_100_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'number' => 100,
+        ]);
+
+        $response->assertJsonValidationErrors(['number' => 'The number field must be between 1 and 99.']);
+    }
+
+    public function test_the_driver_name_is_required_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'name' => '',
+        ]);
+
+        $response->assertJsonValidationErrors(['name' => 'The name field is required.']);
+    }
+
+    public function test_the_driver_name_must_be_a_string_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'name' => 123,
+        ]);
+
+        $response->assertJsonValidationErrors(['name' => 'The name field must be a string.']);
+    }
+
+    public function test_the_driver_name_must_be_unique_when_creating_a_driver(): void
+    {
+        $user = User::factory()->admin()->create();
+        Driver::factory()->create(['name' => 'John Doe']);
+
+        $response = $this->actingAs($user)->postJson(route('admin.drivers.store'), [
+            'name' => 'John Doe',
+        ]);
+
+        $response->assertJsonValidationErrors(['name' => 'The name has already been taken.']);
+    }
 }

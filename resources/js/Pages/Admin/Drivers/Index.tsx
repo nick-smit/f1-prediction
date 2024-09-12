@@ -2,7 +2,9 @@ import Layout from '@/Layouts/Layout';
 import AdminBox from '@/Components/AdminBox';
 import { Head, router } from '@inertiajs/react';
 import {
+    Button,
     Checkbox,
+    Flex,
     Heading,
     HStack,
     IconButton,
@@ -58,9 +60,14 @@ export default function ({ drivers }: Props) {
             <Head title={'Manage drivers'} />
             <AdminBox>
                 <Stack spacing={2}>
-                    <Heading size={'lg'} mb={8}>
-                        Manage drivers
-                    </Heading>
+                    <Flex justify={'space-between'}>
+                        <Heading size={'lg'} mb={8}>
+                            Manage drivers
+                        </Heading>
+                        <LinkBridge href={route('admin.drivers.create')}>
+                            <Button>New Driver</Button>
+                        </LinkBridge>
+                    </Flex>
                     <HStack
                         spacing={4}
                         justifyContent={'end'}
@@ -119,13 +126,22 @@ export default function ({ drivers }: Props) {
                                                 spacing={2}
                                                 justifyContent={'end'}
                                             >
-                                                <IconButton
-                                                    size={'xsm'}
-                                                    aria-label={'Edit driver'}
-                                                    title={'Edit driver'}
-                                                    icon={<EditIcon />}
-                                                    variant={'secondary'}
-                                                />
+                                                <LinkBridge
+                                                    href={route(
+                                                        'admin.drivers.edit',
+                                                        { driver: driver.id }
+                                                    )}
+                                                >
+                                                    <IconButton
+                                                        size={'xsm'}
+                                                        aria-label={
+                                                            'Edit driver'
+                                                        }
+                                                        title={'Edit driver'}
+                                                        icon={<EditIcon />}
+                                                        variant={'secondary'}
+                                                    />
+                                                </LinkBridge>
                                                 <IconButton
                                                     size={'xsm'}
                                                     aria-label={
