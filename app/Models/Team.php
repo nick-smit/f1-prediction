@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\TeamFactory;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,8 +36,28 @@ class Team extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name'
+    ];
+
     public function contracts(): HasMany
     {
         return $this->hasMany(DriverContract::class);
+    }
+
+    public function getCurrentContracts(DateTimeInterface $onDate = null): Collection
+    {
+        if (!$this->relationLoaded('contracts')) {
+            return $this->contracts()->active($onDate)->get();
+        }
+
+        return $this->contracts->filter(function (DriverContract $contract) use ($onDate): ?DriverContract {
+            $onDate ??= Carbon::now()->toDateTime();
+            if ($contract->start_date <= $onDate && ($contract->end_date === null || $contract->end_date > $onDate)) {
+                return $contract;
+            }
+
+            return null;
+        });
     }
 }

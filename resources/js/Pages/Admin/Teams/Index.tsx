@@ -3,7 +3,6 @@ import AdminBox from '@/Components/AdminBox';
 import { Head, router } from '@inertiajs/react';
 import {
     Button,
-    Checkbox,
     Flex,
     Heading,
     HStack,
@@ -21,7 +20,7 @@ import {
     Thead,
     Tr,
 } from '@chakra-ui/react';
-import { CalendarIcon, EditIcon, SearchIcon } from '@chakra-ui/icons';
+import { EditIcon, SearchIcon } from '@chakra-ui/icons';
 import { Paginator } from '@/types';
 import LinkBridge from '@/Components/LinkBridge';
 import React, { useEffect } from 'react';
@@ -29,44 +28,34 @@ import useSearchParameter from '@/hooks/useSearchParameter';
 import { useDebounce } from '@uidotdev/usehooks';
 import PaginationLinks from '@/Components/PaginationLinks';
 
-type Driver = {
+type Team = {
     id: number;
     name: string;
-    number: number;
-    has_contract: boolean;
-    current_team_id: string;
-    current_team_name: string;
-    current_contract_start: string;
-    current_contract_end: string | null;
 };
 
 type Props = {
-    drivers: Paginator<Driver>;
+    teams: Paginator<Team>;
 };
 
-export default function ({ drivers }: Props) {
+export default function ({ teams }: Props) {
     const [search, setSearch] = useSearchParameter('s');
-    const [hideInactive, setHideInactive] = useSearchParameter(
-        'hide_inactive',
-        '1'
-    );
 
     const debouncedSearch = useDebounce(search, 250);
     useEffect(() => {
         router.reload();
-    }, [debouncedSearch, hideInactive]);
+    }, [debouncedSearch]);
 
     return (
         <Layout>
-            <Head title={'Manage drivers'} />
+            <Head title={'Manage teams'} />
             <AdminBox>
                 <Stack spacing={2}>
                     <Flex justify={'space-between'}>
                         <Heading size={'lg'} mb={8}>
-                            Manage drivers
+                            Manage teams
                         </Heading>
-                        <LinkBridge href={route('admin.drivers.create')}>
-                            <Button>New Driver</Button>
+                        <LinkBridge href={route('admin.teams.create')}>
+                            <Button>New Team</Button>
                         </LinkBridge>
                     </Flex>
                     <HStack
@@ -74,15 +63,6 @@ export default function ({ drivers }: Props) {
                         justifyContent={'end'}
                         alignItems={'center'}
                     >
-                        <Checkbox
-                            defaultChecked={Boolean(hideInactive)}
-                            checked={Boolean(hideInactive)}
-                            onChange={(e) => {
-                                setHideInactive(e.target.checked ? '1' : '0');
-                            }}
-                        >
-                            Hide inactive drivers
-                        </Checkbox>
                         <InputGroup w={300}>
                             <Input
                                 placeholder="Search..."
@@ -98,30 +78,16 @@ export default function ({ drivers }: Props) {
                         <Table size="sm">
                             <Thead>
                                 <Tr>
-                                    <Th>Driver</Th>
-                                    <Th isNumeric>Number</Th>
-                                    <Th>Current team</Th>
-                                    <Th colSpan={2}>Current contract</Th>
+                                    <Th colSpan={2}>Team</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
-                                {drivers.data.map((driver) => (
+                                {teams.data.map((team) => (
                                     <Tr
-                                        key={driver.id}
+                                        key={team.id}
                                         _hover={{ bg: '#252C3A' }}
                                     >
-                                        <Td>{driver.name}</Td>
-                                        <Td isNumeric>{driver.number}</Td>
-                                        <Td>
-                                            {driver.has_contract
-                                                ? driver.current_team_name
-                                                : '-'}
-                                        </Td>
-                                        <Td>
-                                            {driver.has_contract
-                                                ? driver.current_contract_start
-                                                : '-'}
-                                        </Td>
+                                        <Td>{team.name}</Td>
                                         <Td>
                                             <HStack
                                                 spacing={2}
@@ -129,29 +95,18 @@ export default function ({ drivers }: Props) {
                                             >
                                                 <LinkBridge
                                                     href={route(
-                                                        'admin.drivers.edit',
-                                                        { driver: driver.id }
+                                                        'admin.teams.edit',
+                                                        { team: team.id }
                                                     )}
                                                 >
                                                     <IconButton
                                                         size={'xsm'}
-                                                        aria-label={
-                                                            'Edit driver'
-                                                        }
-                                                        title={'Edit driver'}
+                                                        aria-label={'Edit team'}
+                                                        title={'Edit team'}
                                                         icon={<EditIcon />}
                                                         variant={'secondary'}
                                                     />
                                                 </LinkBridge>
-                                                <IconButton
-                                                    size={'xsm'}
-                                                    aria-label={
-                                                        'Change contract'
-                                                    }
-                                                    title={'Change contract'}
-                                                    icon={<CalendarIcon />}
-                                                    variant={'secondary'}
-                                                />
                                             </HStack>
                                         </Td>
                                     </Tr>
@@ -161,9 +116,7 @@ export default function ({ drivers }: Props) {
                             <Tfoot>
                                 <Tr>
                                     <Td colSpan={5} textAlign={'center'}>
-                                        <PaginationLinks
-                                            links={drivers.links}
-                                        />
+                                        <PaginationLinks links={teams.links} />
                                     </Td>
                                 </Tr>
                             </Tfoot>

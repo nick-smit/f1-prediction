@@ -38,7 +38,7 @@ final class DriverTest extends TestCase
         $this->assertCount(1, $driver->contracts);
     }
 
-    public function test_a_can_retrieve_the_current_contract_when_contracts_are_not_preloaded(): void
+    public function test_a_driver_can_retrieve_the_current_contract_when_contracts_are_not_preloaded(): void
     {
         $driver = Driver::factory()->create();
         $contract = DriverContract::factory()->create([
@@ -52,7 +52,7 @@ final class DriverTest extends TestCase
         $this->assertEquals($currentContract->toArray(), $contract->toArray());
     }
 
-    public function test_a_can_retrieve_the_current_contract_when_contracts_are_preloaded(): void
+    public function test_a_driver_can_retrieve_the_current_contract_when_contracts_are_preloaded(): void
     {
         $driver = Driver::factory()->create();
         $contract = DriverContract::factory()->create([
@@ -69,7 +69,7 @@ final class DriverTest extends TestCase
         $this->assertQueryCount(0);
     }
 
-    public function test_a_can_retrieve_the_current_contract_when_contracts_are_preloaded_2(): void
+    public function test_a_driver_can_retrieve_the_current_contract_when_contracts_are_preloaded_2(): void
     {
         $driver = Driver::factory()->create();
         $contract = DriverContract::factory()->create([
@@ -86,7 +86,7 @@ final class DriverTest extends TestCase
         $this->assertQueryCount(0);
     }
 
-    public function test_a_can_retrieve_the_current_contract_when_contracts_are_preloaded_3(): void
+    public function test_a_driver_can_retrieve_the_current_contract_when_contracts_are_preloaded_3(): void
     {
         $driver = Driver::factory()->create();
         DriverContract::factory()->create([
@@ -103,7 +103,7 @@ final class DriverTest extends TestCase
         $this->assertQueryCount(0);
     }
 
-    public function test_a_can_retrieve_the_current_contract_when_contracts_are_preloaded_4(): void
+    public function test_a_driver_can_retrieve_the_current_contract_when_contracts_are_preloaded_4(): void
     {
         $driver = Driver::factory()->create();
         DriverContract::factory()->create([
@@ -120,7 +120,7 @@ final class DriverTest extends TestCase
         $this->assertQueryCount(0);
     }
 
-    public function test_a_can_retrieve_the_current_contract_when_contracts_are_preloaded_5(): void
+    public function test_a_driver_can_retrieve_the_current_contract_when_contracts_are_preloaded_5(): void
     {
         $driver = Driver::factory()->create();
         DriverContract::factory()->create([

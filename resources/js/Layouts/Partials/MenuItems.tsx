@@ -23,6 +23,9 @@ export default function MenuItems({ user }: Props): ReactElement {
                     <LinkBridge href={route('admin.drivers.index')}>
                         Drivers
                     </LinkBridge>
+                    <LinkBridge href={route('admin.teams.index')}>
+                        Teams
+                    </LinkBridge>
                 </>
             ) : null}
         </Stack>

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\DriverRequest;
+use App\Http\Requests\Admin\DriverRequest;
 use App\Models\Driver;
 use App\Models\DriverContract;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,8 +32,7 @@ class DriverManagerController
         }
 
         /** @var LengthAwarePaginator $drivers */
-        $drivers = $query
-            ->paginate(15)
+        $drivers = $query->paginate(15)
             ->withQueryString()
             ->through(static function (Driver $driver): array {
                 $contract = $driver->getCurrentContract();

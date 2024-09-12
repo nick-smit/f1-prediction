@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
-use App\Models\Driver;
+use App\Models\Team;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Unique;
 
-class DriverRequest extends FormRequest
+class TeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()?->is_admin ?? false;
+        return $this->user()?->is_admin === true;
     }
 
     /**
@@ -26,18 +26,17 @@ class DriverRequest extends FormRequest
      */
     public function rules(): array
     {
-        $driver = $this->route('driver');
-        $driverUniqueRule = new Unique('drivers', 'name');
-        if ($driver instanceof Driver) {
-            $driverUniqueRule->ignoreModel($driver);
+        $team = $this->route('team');
+        $teamUniqueRule = new Unique('teams', 'name');
+        if ($team instanceof Team) {
+            $teamUniqueRule->ignoreModel($team);
         }
 
         return [
-            'number' => ['required', 'integer', 'between:1,99'],
             'name' => [
                 'required',
                 'string',
-                $driverUniqueRule
+                $teamUniqueRule
             ],
         ];
     }
