@@ -43,12 +43,17 @@ class DriverContract extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'start_date',
+        'end_date',
+    ];
+
     #[Override]
     protected function casts(): array
     {
         return [
-            'start_date' => 'datetime',
-            'end_date' => 'datetime',
+            'start_date' => 'date',
+            'end_date' => 'date',
         ];
     }
 
@@ -66,7 +71,7 @@ class DriverContract extends Model
     {
         $query->whereDate('start_date', '<=', $onDate ?? Carbon::now()->toDateTime())
             ->where(function (Builder $query) use ($onDate): void {
-                $query->whereDate('end_date', '>', $onDate ?? Carbon::now()->toDateTime())
+                $query->whereDate('end_date', '>=', $onDate ?? Carbon::now()->toDateTime())
                     ->orWhereNull('end_date');
             });
     }

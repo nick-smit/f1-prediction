@@ -42,6 +42,7 @@ class DriverManagerController
                     'name' => $driver->name,
                     'number' => $driver->number,
                     'has_contract' => $contract instanceof DriverContract,
+                    'current_contract_id' => $contract?->id,
                     'current_team_id' => $contract?->team->id,
                     'current_team_name' => $contract?->team->name,
                     'current_contract_start' => $contract?->start_date,

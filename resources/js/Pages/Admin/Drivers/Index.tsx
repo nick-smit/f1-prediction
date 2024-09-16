@@ -28,12 +28,17 @@ import React, { useEffect } from 'react';
 import useSearchParameter from '@/hooks/useSearchParameter';
 import { useDebounce } from '@uidotdev/usehooks';
 import PaginationLinks from '@/Components/PaginationLinks';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(localizedFormat);
 
 type Driver = {
     id: number;
     name: string;
     number: number;
     has_contract: boolean;
+    current_contract_id: number;
     current_team_id: string;
     current_team_name: string;
     current_contract_start: string;
@@ -119,7 +124,9 @@ export default function ({ drivers }: Props) {
                                         </Td>
                                         <Td>
                                             {driver.has_contract
-                                                ? driver.current_contract_start
+                                                ? dayjs(
+                                                      driver.current_contract_start
+                                                  ).format('L')
                                                 : '-'}
                                         </Td>
                                         <Td>
@@ -143,15 +150,59 @@ export default function ({ drivers }: Props) {
                                                         variant={'secondary'}
                                                     />
                                                 </LinkBridge>
-                                                <IconButton
-                                                    size={'xsm'}
-                                                    aria-label={
-                                                        'Change contract'
-                                                    }
-                                                    title={'Change contract'}
-                                                    icon={<CalendarIcon />}
-                                                    variant={'secondary'}
-                                                />
+                                                {driver.has_contract ? (
+                                                    <LinkBridge
+                                                        href={route(
+                                                            'admin.contracts.edit',
+                                                            {
+                                                                contract:
+                                                                    driver.current_contract_id,
+                                                            }
+                                                        )}
+                                                    >
+                                                        <IconButton
+                                                            size={'xsm'}
+                                                            aria-label={
+                                                                'Change contract'
+                                                            }
+                                                            title={
+                                                                'Change contract'
+                                                            }
+                                                            icon={
+                                                                <CalendarIcon />
+                                                            }
+                                                            variant={
+                                                                'secondary'
+                                                            }
+                                                        />
+                                                    </LinkBridge>
+                                                ) : (
+                                                    <LinkBridge
+                                                        href={route(
+                                                            'admin.contracts.create',
+                                                            {
+                                                                driver_id:
+                                                                    driver.id,
+                                                            }
+                                                        )}
+                                                    >
+                                                        <IconButton
+                                                            size={'xsm'}
+                                                            aria-label={
+                                                                'Create contract'
+                                                            }
+                                                            title={
+                                                                'Create contract'
+                                                            }
+                                                            icon={
+                                                                <CalendarIcon />
+                                                            }
+                                                            variant={
+                                                                'secondary'
+                                                            }
+                                                        />
+                                                    </LinkBridge>
+                                                )}
                                             </HStack>
                                         </Td>
                                     </Tr>

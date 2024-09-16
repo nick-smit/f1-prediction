@@ -24,7 +24,7 @@ export default function useTeamForm(team?: Team): UseForm<TeamFormValues> {
                 post(route('admin.teams.store'));
             }
         },
-        [put, teamId]
+        [post, put, teamId]
     );
 
     const change = useChange(setData);

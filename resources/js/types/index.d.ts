@@ -1,26 +1,39 @@
-import type { ChangeEvent, FormEventHandler } from 'react';
+import type { FormEventHandler } from 'react';
+import useChange from '@/hooks/useChange';
 
-export interface User {
+type Date = string;
+type DateTime = string;
+
+type Timestampable = {
+    created_at: DateTime;
+    updated_at: DateTime;
+};
+
+export type User = Timestampable & {
     id: number;
     name: string;
     email: string;
-    email_verified_at: string;
+    email_verified_at: DateTime;
     is_admin: boolean;
-}
+};
 
-export type Driver = {
+export type Driver = Timestampable & {
     id: number;
     number: number;
     name: string;
-    created_at: string;
-    updated_at: string;
 };
 
-export type Team = {
+export type Team = Timestampable & {
     id: number;
     name: string;
-    created_at: string;
-    updated_at: string;
+};
+
+export type DriverContract = Timestampable & {
+    id: number;
+    driver_id: number;
+    team_id: number;
+    start_date: Date;
+    end_date: Date | null;
 };
 
 export type PageProps<
@@ -54,7 +67,8 @@ export type Paginator<T> = {
 export type UseForm<FormValues> = {
     data: FormValues;
     errors: Partial<Record<keyof FormValues, string>>;
-    change: (e: ChangeEvent<HTMLInputElement>) => void;
+    change: ReturnType<typeof useChange>;
     submit: FormEventHandler;
     processing: boolean;
+    reset?: (...fields: (keyof FormValues)[]) => void;
 };

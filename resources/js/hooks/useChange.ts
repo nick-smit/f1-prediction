@@ -6,7 +6,7 @@ export default function useChange<TForm extends object>(
     setData: InertiaFormProps<TForm>['setData']
 ): ChangeEventHandler {
     return useCallback<ChangeEventHandler>(
-        (e: ChangeEvent<HTMLInputElement>): void => {
+        (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
             switch (e.target.type) {
                 case 'checkbox':
                     setData(e.target.name, e.target.checked);
