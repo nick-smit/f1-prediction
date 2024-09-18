@@ -24,8 +24,7 @@ final class UniqueDriverContractTest extends TestCase
         string  $newStartDate,
         ?string $newEndDate,
         bool    $expectedResult,
-    ): void
-    {
+    ): void {
         $driver = Driver::factory()->create();
         $team = Team::factory()->create();
 
@@ -55,8 +54,7 @@ final class UniqueDriverContractTest extends TestCase
         string  $newStartDate,
         ?string $newEndDate,
         bool    $expectedResult,
-    ): void
-    {
+    ): void {
         $driver = Driver::factory()->create();
         $team = Team::factory()->create();
         $except = DriverContract::factory()->create([

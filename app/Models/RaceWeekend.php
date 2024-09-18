@@ -19,6 +19,7 @@ use Override;
  * @property int $id
  * @property Carbon $start_date
  * @property string $name
+ * @property string $stats_f1_name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, RaceSession> $raceSessions
@@ -31,6 +32,7 @@ use Override;
  * @method static Builder|RaceWeekend whereId($value)
  * @method static Builder|RaceWeekend whereName($value)
  * @method static Builder|RaceWeekend whereStartDate($value)
+ * @method static Builder|RaceWeekend whereStatsF1Name($value)
  * @method static Builder|RaceWeekend whereUpdatedAt($value)
  * @mixin Model
  */
@@ -41,6 +43,7 @@ class RaceWeekend extends Model
     protected $fillable = [
         'name',
         'start_date',
+        'stats_f1_name',
     ];
 
     public function raceSessions(): HasMany

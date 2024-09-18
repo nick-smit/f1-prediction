@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Import;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 final class RaceWeekendsFromTest extends TestCase
@@ -16,14 +18,18 @@ final class RaceWeekendsFromTest extends TestCase
      */
     public function test_race_weekends_from_ics_script(): void
     {
-        \Illuminate\Support\Facades\Http::fake([
-            'files-f1.motorsportcalendars.com/*' => \Illuminate\Support\Facades\Http::response(\Illuminate\Support\Facades\File::get(storage_path('testing/f1-calendar_p1_p2_p3_qualifying_sprint_gp.ics'))),
+        Http::preventStrayRequests();
+        Http::fake([
+            'files-f1.motorsportcalendars.com/*' => Http::response(Storage::get('console/commands/import/f1-calendar_p1_p2_p3_qualifying_sprint_gp.ics')),
         ]);
 
         $result = $this->artisan('import:race-weekends-from-ics');
 
+        $result->expectsQuestion('What is the stats f1 url for the Bahrain Grand Prix', 'https://www.statsf1.com/en/2024/bahrein.aspx');
+        $result->expectsQuestion('What is the stats f1 url for the Saudi Arabian Grand Prix', 'https://www.statsf1.com/en/2024/arabie-saoudite.aspx');
+
         $result->assertSuccessful();
-        $result->expectsOutput('Importing 24 race weekends');
-        $result->expectsOutput('Imported 120 race sessions');
+        $result->expectsOutput('Importing 2 race weekends');
+        $result->expectsOutput('Imported 10 race sessions');
     }
 }

@@ -24,7 +24,7 @@ class TeamManagerController
 
         $teams = $query->paginate(15)
             ->withQueryString()
-            ->through(static fn(Team $team): array => [
+            ->through(static fn (Team $team): array => [
                 'id' => $team->id,
                 'name' => $team->name,
             ]);

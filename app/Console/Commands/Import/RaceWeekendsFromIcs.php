@@ -13,6 +13,7 @@ use ICal\ICal;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Client\RequestException;
+use Laravel\Prompts\TextPrompt;
 
 class RaceWeekendsFromIcs extends Command
 {
@@ -44,10 +45,35 @@ class RaceWeekendsFromIcs extends Command
         $importedSessions = 0;
         $this->info(sprintf('Importing %d race weekends', count($structuredEvents)));
         foreach ($structuredEvents as $eventName => $events) {
-            $raceWeekend = new RaceWeekend([
-                'name' => $eventName,
-                'start_date' => new DateTime($events[0]->dtstart_tz),
-            ]);
+            /** @var RaceWeekend $previousRaceWeekend */
+            $previousRaceWeekend = RaceWeekend::whereName($eventName)->first();
+            $statsF1Name = $previousRaceWeekend?->stats_f1_name;
+            if ($statsF1Name === null) {
+                $statsF1Url = new TextPrompt(
+                    'What is the stats f1 url for the ' . $eventName,
+                    required: true,
+                    transform: function (string $value): string {
+                        // @codeCoverageIgnoreStart
+                        $parts = explode('/', $value);
+                        return substr(end($parts), 0, -strlen('.aspx'));
+                        // @codeCoverageIgnoreEnd
+                    },
+                );
+
+                $statsF1Name = $statsF1Url->prompt();
+                $this->info(sprintf('Using name %s', $statsF1Name));
+            }
+
+            /** @var RaceWeekend $raceWeekend */
+            $raceWeekend = RaceWeekend::whereName($eventName)
+                ->whereRaw('YEAR(start_date) = ?', [(new DateTime($events[0]->dtstart_tz))->format('Y')])
+                ->firstOrCreate(
+                    [
+                        'name' => $eventName,
+                        'start_date' => new DateTime($events[0]->dtstart_tz),
+                        'stats_f1_name' => $statsF1Name,
+                    ]
+                );
 
             $raceWeekend->save();
 
@@ -60,8 +86,10 @@ class RaceWeekendsFromIcs extends Command
                         'FP1,F1', 'FP2,F1', 'FP3,F1' => SessionType::Practice,
                         'Qualifying,F1' => SessionType::Qualification,
                         'Grand Prix,F1' => SessionType::Race,
+                        // @codeCoverageIgnoreStart
                         'Sprint Qualifying,F1' => SessionType::SprintQualification,
                         'Sprint,F1' => SessionType::SprintRace,
+                        // @codeCoverageIgnoreEnd
                     }
                 ]);
 

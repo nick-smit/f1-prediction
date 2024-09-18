@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\RaceWeekend;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Override;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RaceWeekend>
+ * @extends Factory<RaceWeekend>
  */
 class RaceWeekendFactory extends Factory
 {
@@ -23,6 +24,7 @@ class RaceWeekendFactory extends Factory
         return [
             'start_date' => fake()->dateTimeThisYear('first day of next year'),
             'name' => fake()->country() . ' Grand Prix',
+            'stats_f1_name' => fake()->country(),
         ];
     }
 }

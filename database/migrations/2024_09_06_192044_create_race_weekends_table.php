@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->date('start_date');
             $table->string('name');
+            $table->string('stats_f1_name');
             $table->timestamps();
         });
     }

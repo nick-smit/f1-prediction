@@ -262,7 +262,8 @@ final class ContractManagementControllerTest extends TestCase
     }
 
     public function test_an_admin_can_change_drivers_and_teams_of_a_contract(): void
-    {$user = User::factory()->admin()->create();
+    {
+        $user = User::factory()->admin()->create();
 
         $teams = Team::factory()->count(2)->create();
         $drivers = Driver::factory()->count(2)->create();
