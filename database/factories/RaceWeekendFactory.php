@@ -22,7 +22,7 @@ class RaceWeekendFactory extends Factory
     public function definition(): array
     {
         return [
-            'start_date' => fake()->dateTimeThisYear('first day of next year'),
+            'start_date' => fake()->dateTimeThisYear(),
             'name' => fake()->country() . ' Grand Prix',
             'stats_f1_name' => fake()->country(),
         ];

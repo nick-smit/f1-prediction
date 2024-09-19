@@ -4,9 +4,10 @@ import { Paginator } from '@/types';
 
 type Props = {
     links: Paginator<never>['links'];
+    only: string[];
 };
 
-export default function PaginationLinks({ links }: Props): ReactElement {
+export default function PaginationLinks({ links, only }: Props): ReactElement {
     const linkElements = links.map((link) => {
         if (link.url === null) {
             return;
@@ -18,6 +19,8 @@ export default function PaginationLinks({ links }: Props): ReactElement {
                 href={link.url}
                 mx={1}
                 fontWeight={link.active ? 'bold' : 'normal'}
+                only={only}
+                preserveScroll
             >
                 {link.label}
             </LinkBridge>

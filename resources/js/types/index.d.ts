@@ -36,6 +36,14 @@ export type DriverContract = Timestampable & {
     end_date: Date | null;
 };
 
+export enum SessionType {
+    Practice = 'practice',
+    SprintQualification = 'sprint_qualification',
+    SprintRace = 'sprint_race',
+    Qualification = 'qualification',
+    Race = 'race',
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {

@@ -26,6 +26,9 @@ export default function MenuItems({ user }: Props): ReactElement {
                     <LinkBridge href={route('admin.teams.index')}>
                         Teams
                     </LinkBridge>
+                    <LinkBridge href={route('admin.race-sessions.index')}>
+                        Race Sessions
+                    </LinkBridge>
                 </>
             ) : null}
         </Stack>

@@ -17,7 +17,7 @@
                 "action": "./vendor/bin/sail php ./vendor/bin/rector --dry-run --no-progress-bar --no-diffs"
             },
             {
-                "action": "./vendor/bin/sail php ./vendor/bin/pint --dirty"
+                "action": "./vendor/bin/sail php ./vendor/bin/pint"
             },
             {
                 "action": "\\CaptainHook\\App\\Hook\\PHP\\Action\\Linting"
