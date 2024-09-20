@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultNotFoundException;
+use App\Http\Resources\ActionResultResource;
+use App\Jobs\RaceSession\CalculateScoresJob;
+use App\Jobs\RaceSession\ImportResultsJob;
 use App\Models\Driver;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use Carbon\Carbon;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -109,6 +114,26 @@ class RaceSessionsManagementController
                     'p10' => $drivers->firstWhere('id', $raceSession->sessionResult->p10_id),
                 ];
             }]);
+    }
+
+    public function importResults(RaceSession $raceSession, Dispatcher $dispatcher): ActionResultResource
+    {
+        try {
+            $dispatcher->dispatchSync(new ImportResultsJob($raceSession));
+        } catch (SessionResultNotFoundException $sessionResultNotFoundException) {
+            return new ActionResultResource(false, $sessionResultNotFoundException->getMessage());
+        }
+
+        $dispatcher->dispatchSync(new CalculateScoresJob($raceSession), );
+
+        return new ActionResultResource(true);
+    }
+
+    public function calculateScores(RaceSession $raceSession, Dispatcher $dispatcher): ActionResultResource
+    {
+        $dispatcher->dispatchSync(new CalculateScoresJob($raceSession));
+
+        return new ActionResultResource(true);
     }
 
     private function getRequiredAction(RaceSession $session, bool $throw = true): ?string

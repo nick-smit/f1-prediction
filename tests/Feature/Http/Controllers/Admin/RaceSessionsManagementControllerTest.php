@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Admin;
 
+use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultNotFoundException;
+use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultScraper;
 use App\GrandPrixGuessr\Session\SessionType;
 use App\Http\Controllers\Admin\RaceSessionsManagementController;
+use App\Jobs\RaceSession\CalculateScoresJob;
+use App\Jobs\RaceSession\ImportResultsJob;
 use App\Models\Guess;
 use App\Models\RaceSession;
 use App\Models\RaceWeekend;
@@ -13,8 +17,11 @@ use App\Models\SessionResult;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
@@ -160,5 +167,67 @@ final class RaceSessionsManagementControllerTest extends TestCase
             ->has('results')
         );
         $this->assertQueryCount(5);
+    }
+
+    public function test_imports_results_imports_results_and_calculates_scores(): void
+    {
+        Bus::fake();
+
+        $user = User::factory()->admin()->create();
+        $this->actingAs($user);
+
+        $session = RaceSession::factory()->create();
+
+        $response = $this->post(route('admin.race-sessions.import-results', ['race_session' => $session->id]));
+
+        $response->assertOk();
+        $response->assertJson(['success' => true, 'message' => '']);
+
+        Bus::assertDispatched(ImportResultsJob::class);
+        Bus::assertDispatched(CalculateScoresJob::class);
+    }
+
+    public function test_imports_results_fails_when_results_are_not_ready(): void
+    {
+        $this->instance(
+            SessionResultScraper::class,
+            Mockery::mock(SessionResultScraper::class, function (MockInterface $mock): void {
+                $mock->shouldReceive('scrape')
+                    ->once()
+                    ->andThrow(new SessionResultNotFoundException('Session results were not found.'));
+            })
+        );
+
+        Bus::fake()->except([ImportResultsJob::class]);
+
+        $user = User::factory()->admin()->create();
+        $this->actingAs($user);
+
+        $session = RaceSession::factory()
+            ->create();
+
+        $response = $this->post(route('admin.race-sessions.import-results', ['race_session' => $session->id]));
+
+        $response->assertOk();
+        $response->assertJson(['success' => false, 'message' => 'Session results were not found.']);
+
+        Bus::assertNotDispatched(CalculateScoresJob::class);
+    }
+
+    public function test_calculate_scores_calculates_scores(): void
+    {
+        Bus::fake();
+
+        $user = User::factory()->admin()->create();
+        $this->actingAs($user);
+
+        $session = RaceSession::factory()->create();
+
+        $response = $this->post(route('admin.race-sessions.calculate-scores', ['race_session' => $session->id]));
+
+        $response->assertOk();
+        $response->assertJson(['success' => true, 'message' => '']);
+
+        Bus::assertDispatched(CalculateScoresJob::class);
     }
 }

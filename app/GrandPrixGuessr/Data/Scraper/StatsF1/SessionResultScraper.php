@@ -11,9 +11,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\DomCrawler\Crawler;
 
-readonly class SessionResultScraper
+class SessionResultScraper
 {
-    private PendingRequest $client;
+    private readonly PendingRequest $client;
 
     public function __construct(Factory $factory)
     {

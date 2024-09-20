@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\GrandPrixGuessr\Service;
+namespace App\Jobs\RaceSession;
 
 use App\GrandPrixGuessr\Calculation\ScoreCalculation;
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMap;
@@ -12,50 +12,39 @@ use App\Models\Guess;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use Assert\Assertion;
-use Assert\AssertionFailedException;
+use Illuminate\Foundation\Bus\Dispatchable;
 
-readonly class ScoreCalculationService
+class CalculateScoresJob
 {
-    public function __construct(
-        private ScoreCalculation    $scoreCalculation,
-        private DriverDTOMapFactory $driverDTOMapFactory,
-    ) {
+    use Dispatchable;
+
+    public function __construct(private readonly RaceSession $raceSession)
+    {
     }
 
-    /**
-     * @throws AssertionFailedException
-     */
-    public function handle(RaceSession $raceSession): int
+    public function handle(ScoreCalculation $scoreCalculation, DriverDTOMapFactory $driverDTOMapFactory): void
     {
-        if ($raceSession->guesses()->count() === 0) {
+        if ($this->raceSession->guesses()->count() === 0) {
             // Nothing to do.
-            return 0;
+            return;
         }
 
-        $driverDTOMap = $this->driverDTOMapFactory->create($raceSession->session_start);
+        $driverDTOMap = $driverDTOMapFactory->create($this->raceSession->session_start);
         Assertion::false($driverDTOMap->isEmpty(), 'The driver DTO map should not be empty.');
 
-        $sessionResultDTO = $this->getTopTen($driverDTOMap, $raceSession->sessionResult);
+        $sessionResultDTO = $this->getTopTen($driverDTOMap, $this->raceSession->sessionResult);
 
-        $guessesUpdated = 0;
         /** @var Guess $guess */
-        foreach ($raceSession->guesses()->cursor() as $guess) {
+        foreach ($this->raceSession->guesses()->cursor() as $guess) {
             $guessDTO = $this->getTopTen($driverDTOMap, $guess);
 
-            $score = $this->scoreCalculation->calculate($sessionResultDTO, $guessDTO);
+            $score = $scoreCalculation->calculate($sessionResultDTO, $guessDTO);
 
             $guess->score = $score;
             $guess->save();
-
-            ++$guessesUpdated;
         }
-
-        return $guessesUpdated;
     }
 
-    /**
-     * @throws AssertionFailedException
-     */
     private function getTopTen(DriverDTOMap $driverDTOMap, SessionResult|Guess $sessionResultOrGuess): TopTen
     {
         return TopTen::fromArray([

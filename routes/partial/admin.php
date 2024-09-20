@@ -14,4 +14,8 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::resource('drivers', DriverManagerController::class)->except(['show', 'destroy']);
     Route::resource('teams', TeamManagerController::class)->except(['show', 'destroy']);
     Route::resource('race-sessions', RaceSessionsManagementController::class)->only(['index', 'show']);
+    Route::name('race-sessions.')->prefix('race-sessions/{race_session}')->group(function (): void {
+        Route::name('import-results')->post('import-results', [RaceSessionsManagementController::class, 'importResults']);
+        Route::name('calculate-scores')->post('calculate-scores', [RaceSessionsManagementController::class, 'calculateScores']);
+    });
 });

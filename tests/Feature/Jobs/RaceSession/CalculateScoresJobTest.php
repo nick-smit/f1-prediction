@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\GrandPrixGuessr\Service;
+namespace Tests\Feature\Jobs\RaceSession;
 
 use App\GrandPrixGuessr\Calculation\ScoreCalculation;
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMap;
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMapFactory;
-use App\GrandPrixGuessr\Service\ScoreCalculationService;
+use App\Jobs\RaceSession\CalculateScoresJob;
 use App\Models\Driver;
 use App\Models\DriverContract;
 use App\Models\Guess;
@@ -17,22 +17,23 @@ use App\Models\Team;
 use Assert\InvalidArgumentException;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-final class ScoreCalculationServiceTest extends TestCase
+#[CoversClass(CalculateScoresJob::class)]
+final class CalculateScoresJobTest extends TestCase
 {
     use RefreshDatabase;
     public function test_a_session_without_guesses_does_nothing(): void
     {
         $session = RaceSession::factory()->create();
 
-        $result = $this->queryCounted(fn () => $this->app->make(ScoreCalculationService::class)
-            ->handle($session));
+        $this->queryCounted(fn () => Bus::dispatchSync(new CalculateScoresJob($session)));
 
         $this->assertQueryCount(1);
-        $this->assertSame(0, $result);
     }
 
     public function test_an_assertion_is_thrown_when_the_driver_dto_map_is_empty(): void
@@ -52,8 +53,7 @@ final class ScoreCalculationServiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The driver DTO map should not be empty.');
 
-        $this->app->make(ScoreCalculationService::class)
-            ->handle($session);
+        Bus::dispatchSync(new CalculateScoresJob($session));
     }
 
     public function test_scores_should_be_saved_for_a_guess(): void
@@ -118,10 +118,8 @@ final class ScoreCalculationServiceTest extends TestCase
             })
         );
 
-        $result = $this->queryCounted(fn () => $this->app->make(ScoreCalculationService::class)
-            ->handle($session));
+        $this->queryCounted(fn () => Bus::dispatchSync(new CalculateScoresJob($session)));
 
-        $this->assertSame(1, $result);
         $this->assertQueryCount(7);
         $this->assertSame(123, $guess->refresh()->score);
     }
@@ -187,11 +185,8 @@ final class ScoreCalculationServiceTest extends TestCase
             })
         );
 
-        $result = $this->queryCounted(fn () => $this->app->make(ScoreCalculationService::class)
-            ->handle($session));
+        $this->queryCounted(fn () => Bus::dispatchSync(new CalculateScoresJob($session)));
 
-        $this->assertSame(10, $result);
         $this->assertQueryCount(16);
     }
-
 }
