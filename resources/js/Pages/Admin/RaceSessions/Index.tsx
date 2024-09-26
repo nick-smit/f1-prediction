@@ -22,7 +22,7 @@ import {
     Tr,
 } from '@chakra-ui/react';
 import { DateTime, Paginator, SessionType } from '@/types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useSearchParameter from '@/hooks/useSearchParameter';
 import dayjs from 'dayjs';
 import PaginationLinks from '@/Components/PaginationLinks';
@@ -31,6 +31,7 @@ import LinkBridge from '@/Components/LinkBridge';
 import getActionText, {
     Action,
 } from '@/Pages/Admin/RaceSessions/functions/getActionText';
+import axios from 'axios';
 
 export type RaceSession = {
     id: number;
@@ -55,6 +56,7 @@ type Props = {
 };
 
 export default function Index({ race_sessions, action_required }: Props) {
+    const [progress, setProgress] = useState(-1);
     const [year, setYear] = useSearchParameter(
         'year',
         String(new Date().getFullYear())
@@ -79,7 +81,39 @@ export default function Index({ race_sessions, action_required }: Props) {
                             <Heading size={'sm'}>
                                 Some sessions require actions!
                             </Heading>
-                            <Button size={'sm'}>Execute all</Button>
+                            <Button
+                                isDisabled={progress >= 0}
+                                size={'sm'}
+                                onClick={() => {
+                                    setProgress(0);
+                                    Promise.all(
+                                        action_required.map((action) => {
+                                            return axios
+                                                .post(
+                                                    route(
+                                                        `admin.race-sessions.${action.action}`,
+                                                        {
+                                                            race_session:
+                                                                action.id,
+                                                        },
+                                                        false
+                                                    )
+                                                )
+                                                .then(() =>
+                                                    setProgress(
+                                                        (prevState) =>
+                                                            prevState + 1
+                                                    )
+                                                );
+                                        })
+                                    ).then(() => {
+                                        setProgress(-1);
+                                        router.reload();
+                                    });
+                                }}
+                            >
+                                Execute all
+                            </Button>
                         </Flex>
                         <List>
                             {action_required.map((action) => {
@@ -106,7 +140,27 @@ export default function Index({ race_sessions, action_required }: Props) {
                                                 {action.type} requires action:{' '}
                                                 {actionText}
                                             </span>
-                                            <Button size={'sm'}>Execute</Button>
+                                            <Button
+                                                isDisabled={progress >= 0}
+                                                size={'sm'}
+                                                onClick={() => {
+                                                    axios
+                                                        .post(
+                                                            route(
+                                                                `admin.race-sessions.${action.action}`,
+                                                                {
+                                                                    race_session:
+                                                                        action.id,
+                                                                }
+                                                            )
+                                                        )
+                                                        .then(() =>
+                                                            router.reload()
+                                                        );
+                                                }}
+                                            >
+                                                Execute
+                                            </Button>
                                         </Flex>
                                     </ListItem>
                                 );

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Database\Factories\SessionResultFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -116,5 +117,22 @@ class SessionResult extends Model
     public function p10(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
+    }
+
+    public function getDrivers(): Collection
+    {
+        return Driver::query()
+            ->whereIn('id', [
+                $this->p1_id,
+                $this->p2_id,
+                $this->p3_id,
+                $this->p4_id,
+                $this->p5_id,
+                $this->p6_id,
+                $this->p7_id,
+                $this->p8_id,
+                $this->p9_id,
+                $this->p10_id,
+            ])->get();
     }
 }

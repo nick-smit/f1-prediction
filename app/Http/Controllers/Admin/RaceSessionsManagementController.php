@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultNotFoundException;
-use App\Http\Resources\ActionResultResource;
+use App\Http\Resources\SessionResultResource;
 use App\Jobs\RaceSession\CalculateScoresJob;
 use App\Jobs\RaceSession\ImportResultsJob;
-use App\Models\Driver;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use Carbon\Carbon;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\ResponseFactory;
 use Inertia\Inertia;
 use Inertia\Response;
-use RuntimeException;
 
 class RaceSessionsManagementController
 {
@@ -56,10 +56,8 @@ class RaceSessionsManagementController
                 ->withExists('sessionResult')
                 ->whereGuessable(true)
                 ->whereRaw('session_end < NOW()')
-                ->where(function (Builder $builder): void {
-                    $builder->having('session_result_exists', false)
-                        ->orHaving('guesses_count', '>', 0);
-                })->get()
+                ->having('session_result_exists', '=', 0)
+                ->orHaving('guesses_count', '>', 0)->get()
                 ->map(fn (RaceSession $session): array => [
                     'id' => $session->id,
                     'race_weekend_name' => $session->raceWeekend->name,
@@ -81,62 +79,37 @@ class RaceSessionsManagementController
                 'guesses' => $raceSession->guesses->count(),
                 'has_results' => $raceSession->sessionResult instanceof SessionResult
             ],
-            'action' => fn (): ?string => $this->getRequiredAction($raceSession, false),
-            'results' => function () use ($raceSession): ?array {
+            'action' => fn (): ?string => $this->getRequiredAction($raceSession),
+            'results' => function () use ($raceSession): ?SessionResultResource {
                 if ($raceSession->sessionResult === null) {
                     return null;
                 }
 
-                $drivers = Driver::query()
-                    ->whereIn('id', [
-                        $raceSession->sessionResult->p1_id,
-                        $raceSession->sessionResult->p2_id,
-                        $raceSession->sessionResult->p3_id,
-                        $raceSession->sessionResult->p4_id,
-                        $raceSession->sessionResult->p5_id,
-                        $raceSession->sessionResult->p6_id,
-                        $raceSession->sessionResult->p7_id,
-                        $raceSession->sessionResult->p8_id,
-                        $raceSession->sessionResult->p9_id,
-                        $raceSession->sessionResult->p10_id,
-                    ])->get();
-
-                return [
-                    'p1' => $drivers->firstWhere('id', $raceSession->sessionResult->p1_id),
-                    'p2' => $drivers->firstWhere('id', $raceSession->sessionResult->p2_id),
-                    'p3' => $drivers->firstWhere('id', $raceSession->sessionResult->p3_id),
-                    'p4' => $drivers->firstWhere('id', $raceSession->sessionResult->p4_id),
-                    'p5' => $drivers->firstWhere('id', $raceSession->sessionResult->p5_id),
-                    'p6' => $drivers->firstWhere('id', $raceSession->sessionResult->p6_id),
-                    'p7' => $drivers->firstWhere('id', $raceSession->sessionResult->p7_id),
-                    'p8' => $drivers->firstWhere('id', $raceSession->sessionResult->p8_id),
-                    'p9' => $drivers->firstWhere('id', $raceSession->sessionResult->p9_id),
-                    'p10' => $drivers->firstWhere('id', $raceSession->sessionResult->p10_id),
-                ];
+                return new SessionResultResource($raceSession->sessionResult);
             }]);
     }
 
-    public function importResults(RaceSession $raceSession, Dispatcher $dispatcher): ActionResultResource
+    public function importResults(RaceSession $raceSession, Dispatcher $dispatcher, ResponseFactory $responseFactory): \Illuminate\Http\Response|JsonResponse
     {
         try {
             $dispatcher->dispatchSync(new ImportResultsJob($raceSession));
         } catch (SessionResultNotFoundException $sessionResultNotFoundException) {
-            return new ActionResultResource(false, $sessionResultNotFoundException->getMessage());
+            return $responseFactory->json(['message' => $sessionResultNotFoundException->getMessage()], \Illuminate\Http\Response::HTTP_NOT_FOUND);
         }
 
-        $dispatcher->dispatchSync(new CalculateScoresJob($raceSession), );
+        $dispatcher->dispatchSync(new CalculateScoresJob($raceSession));
 
-        return new ActionResultResource(true);
+        return $responseFactory->noContent();
     }
 
-    public function calculateScores(RaceSession $raceSession, Dispatcher $dispatcher): ActionResultResource
+    public function calculateScores(RaceSession $raceSession, Dispatcher $dispatcher, ResponseFactory $responseFactory): \Illuminate\Http\Response
     {
         $dispatcher->dispatchSync(new CalculateScoresJob($raceSession));
 
-        return new ActionResultResource(true);
+        return $responseFactory->noContent();
     }
 
-    private function getRequiredAction(RaceSession $session, bool $throw = true): ?string
+    private function getRequiredAction(RaceSession $session): ?string
     {
         if ($session->session_end > Carbon::now()) {
             return null;
@@ -156,12 +129,6 @@ class RaceSessionsManagementController
 
         if ($session->guesses_count > 0) {
             return 'calculate-scores';
-        }
-
-        if ($throw) {
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException('Could not determine required action for session ' . $session->id);
-            // @codeCoverageIgnoreEnd
         }
 
         return null;

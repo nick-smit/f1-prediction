@@ -180,8 +180,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
 
         $response = $this->post(route('admin.race-sessions.import-results', ['race_session' => $session->id]));
 
-        $response->assertOk();
-        $response->assertJson(['success' => true, 'message' => '']);
+        $response->assertNoContent();
 
         Bus::assertDispatched(ImportResultsJob::class);
         Bus::assertDispatched(CalculateScoresJob::class);
@@ -208,8 +207,8 @@ final class RaceSessionsManagementControllerTest extends TestCase
 
         $response = $this->post(route('admin.race-sessions.import-results', ['race_session' => $session->id]));
 
-        $response->assertOk();
-        $response->assertJson(['success' => false, 'message' => 'Session results were not found.']);
+        $response->assertNotFound();
+        $response->assertJson(['message' => 'Session results were not found.']);
 
         Bus::assertNotDispatched(CalculateScoresJob::class);
     }
@@ -225,8 +224,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
 
         $response = $this->post(route('admin.race-sessions.calculate-scores', ['race_session' => $session->id]));
 
-        $response->assertOk();
-        $response->assertJson(['success' => true, 'message' => '']);
+        $response->assertNoContent();
 
         Bus::assertDispatched(CalculateScoresJob::class);
     }

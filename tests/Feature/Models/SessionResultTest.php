@@ -8,8 +8,10 @@ use App\Models\Driver;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
+#[CoversClass(SessionResult::class)]
 final class SessionResultTest extends TestCase
 {
     use RefreshDatabase;
@@ -37,5 +39,23 @@ final class SessionResultTest extends TestCase
 
         $this->assertTrue($success);
         $this->assertDatabaseCount(SessionResult::class, 1);
+    }
+
+    public function test_a_session_result_can_retrieve_a_collection_of_drivers(): void
+    {
+        $session = SessionResult::factory()->create();
+
+        $driversCollection = $session->getDrivers();
+        $this->assertCount(10, $driversCollection);
+        $this->assertContainsEquals($session->p1, $driversCollection);
+        $this->assertContainsEquals($session->p2, $driversCollection);
+        $this->assertContainsEquals($session->p3, $driversCollection);
+        $this->assertContainsEquals($session->p4, $driversCollection);
+        $this->assertContainsEquals($session->p5, $driversCollection);
+        $this->assertContainsEquals($session->p6, $driversCollection);
+        $this->assertContainsEquals($session->p7, $driversCollection);
+        $this->assertContainsEquals($session->p8, $driversCollection);
+        $this->assertContainsEquals($session->p9, $driversCollection);
+        $this->assertContainsEquals($session->p10, $driversCollection);
     }
 }
