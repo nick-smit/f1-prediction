@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\RaceSession\CalculateScores;
+use App\Actions\RaceSession\ImportSessionResults;
 use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultNotFoundException;
 use App\Http\Resources\SessionResultResource;
-use App\Jobs\RaceSession\CalculateScoresJob;
-use App\Jobs\RaceSession\ImportResultsJob;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use Carbon\Carbon;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -89,22 +88,20 @@ class RaceSessionsManagementController
             }]);
     }
 
-    public function importResults(RaceSession $raceSession, Dispatcher $dispatcher, ResponseFactory $responseFactory): \Illuminate\Http\Response|JsonResponse
+    public function importResults(RaceSession $raceSession, ImportSessionResults $action, ResponseFactory $responseFactory): \Illuminate\Http\Response|JsonResponse
     {
         try {
-            $dispatcher->dispatchSync(new ImportResultsJob($raceSession));
+            $action->handle($raceSession);
         } catch (SessionResultNotFoundException $sessionResultNotFoundException) {
             return $responseFactory->json(['message' => $sessionResultNotFoundException->getMessage()], \Illuminate\Http\Response::HTTP_NOT_FOUND);
         }
 
-        $dispatcher->dispatchSync(new CalculateScoresJob($raceSession));
-
         return $responseFactory->noContent();
     }
 
-    public function calculateScores(RaceSession $raceSession, Dispatcher $dispatcher, ResponseFactory $responseFactory): \Illuminate\Http\Response
+    public function calculateScores(RaceSession $raceSession, CalculateScores $action, ResponseFactory $responseFactory): \Illuminate\Http\Response
     {
-        $dispatcher->dispatchSync(new CalculateScoresJob($raceSession));
+        $action->handle($raceSession);
 
         return $responseFactory->noContent();
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Authentication\RegisterUser;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Jobs\Auth\RegisterUserJob;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\RedirectResponse;
@@ -23,13 +23,13 @@ class RegisterController
         return Inertia::render('Auth/Register');
     }
 
-    public function store(RegisterRequest $request, ResponseFactory $responseFactory): RedirectResponse
+    public function store(RegisterRequest $request, RegisterUser $registerUser, ResponseFactory $responseFactory): RedirectResponse
     {
-        $this->dispatch(new RegisterUserJob(
+        $registerUser->handle(
             $request->post('name'),
             $request->post('email'),
             $request->post('password'),
-        ));
+        );
 
         return $responseFactory->redirectToRoute('verification.show');
     }

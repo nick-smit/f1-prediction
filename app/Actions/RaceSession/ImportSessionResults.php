@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs\RaceSession;
+namespace App\Actions\RaceSession;
 
 use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultScraper;
 use App\Models\Driver;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Collection;
 use RuntimeException;
 
-class ImportResultsJob
+class ImportSessionResults
 {
-    use Dispatchable;
-
-    public function __construct(private readonly RaceSession $raceSession)
+    public function __construct(private readonly SessionResultScraper $scraper, private readonly CalculateScores $calculateScores)
     {
     }
 
-    public function handle(SessionResultScraper $scraper): void
+    /**
+     * Execute the action.
+     */
+    public function handle(RaceSession $raceSession): void
     {
-        $results = $scraper->scrape(
-            $this->raceSession->raceWeekend->start_date->year,
-            $this->raceSession->raceWeekend->stats_f1_name,
-            $this->raceSession->type
+        $results = $this->scraper->scrape(
+            $raceSession->raceWeekend->start_date->year,
+            $raceSession->raceWeekend->stats_f1_name,
+            $raceSession->type
         );
 
         $drivers = Driver::query()
@@ -33,7 +33,7 @@ class ImportResultsJob
             ->pluck('id', 'name');
 
         /** @var SessionResult $sessionResult */
-        $sessionResult = $this->raceSession->sessionResult()->firstOrNew();
+        $sessionResult = $raceSession->sessionResult()->firstOrNew();
         $sessionResult->p1_id = $this->getDriver($drivers, $results[0]);
         $sessionResult->p2_id = $this->getDriver($drivers, $results[1]);
         $sessionResult->p3_id = $this->getDriver($drivers, $results[2]);
@@ -46,6 +46,8 @@ class ImportResultsJob
         $sessionResult->p10_id = $this->getDriver($drivers, $results[9]);
 
         $sessionResult->save();
+
+        $this->calculateScores->handle($raceSession);
     }
 
     private function getDriver(Collection $drivers, string $name)

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Auth\Authenticator;
+use App\Actions\Authentication\AuthenticateUser;
+use App\Actions\Authentication\SignUserOff;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Jobs\Auth\LogoutJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
@@ -22,9 +22,9 @@ class AuthenticationController
         return Inertia::render('Auth/Login');
     }
 
-    public function login(LoginRequest $request, Authenticator $authenticator, Redirector $redirector): RedirectResponse
+    public function login(LoginRequest $request, AuthenticateUser $action, Redirector $redirector): RedirectResponse
     {
-        $authenticator->authenticate(
+        $action->handle(
             $request->post('email'),
             $request->post('password'),
             $request->post('remember', false),
@@ -35,9 +35,9 @@ class AuthenticationController
         return $redirector->intended();
     }
 
-    public function logout(Redirector $redirector): RedirectResponse
+    public function logout(Redirector $redirector, SignUserOff $action): RedirectResponse
     {
-        $this->dispatch(new LogoutJob());
+        $action->handle();
 
         return $redirector->route('home');
     }

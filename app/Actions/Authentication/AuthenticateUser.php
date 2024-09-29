@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Auth;
+namespace App\Actions\Authentication;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\Events\Lockout;
@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use SensitiveParameter;
 
-readonly class Authenticator
+readonly class AuthenticateUser
 {
     public function __construct(private AuthManager $authManager, private Translator $translator, private Dispatcher $dispatcher, private Request $request)
     {
@@ -22,10 +22,9 @@ readonly class Authenticator
 
     /**
      * Attempt to authenticate the request's credentials.
-     *
      * @throws ValidationException
      */
-    public function authenticate(string $email, #[SensitiveParameter] string $password, bool $remember): void
+    public function handle(string $email, #[SensitiveParameter] string $password, bool $remember): void
     {
         $this->ensureIsNotRateLimited($email);
 

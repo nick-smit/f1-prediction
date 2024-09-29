@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
+use App\Actions\Authentication\RegisterUser;
 use App\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -26,7 +25,14 @@ final class RegisterControllerTest extends TestCase
 
     public function test_a_guest_can_register(): void
     {
-        Notification::fake();
+        $this->mock(RegisterUser::class)
+            ->expects('handle')
+            ->once()
+            ->withArgs(
+                fn ($name, $email, $password): bool => $name === 'John Doe' &&
+                $email === 'john@example.com' &&
+                $password === 'Str0ngP4ssw0rd!sRequ!red'
+            );
 
         $response = $this->post(route('register'), [
             'name' => 'John Doe',
@@ -36,19 +42,6 @@ final class RegisterControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('verification.show'));
-
-        $this->assertDatabaseCount(User::class, 1);
-        /** @var User $user */
-        $user = User::query()->first();
-        $this->assertSame('John Doe', $user->name);
-        $this->assertSame('john@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
-        $this->assertNull($user->remember_token);
-        $this->assertTrue(Hash::check('Str0ngP4ssw0rd!sRequ!red', $user->password));
-
-        $this->assertAuthenticated();
-
-        Notification::assertSentTo([$user], VerifyEmail::class);
     }
 
     public function test_an_authenticated_user_cannot_register(): void

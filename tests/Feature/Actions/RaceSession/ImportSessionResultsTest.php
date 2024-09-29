@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Jobs\RaceSession;
+namespace Tests\Feature\Actions\RaceSession;
 
+use App\Actions\RaceSession\CalculateScores;
+use App\Actions\RaceSession\ImportSessionResults;
 use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultScraper;
 use App\GrandPrixGuessr\Session\SessionType;
-use App\Jobs\RaceSession\ImportResultsJob;
 use App\Models\Driver;
 use App\Models\RaceSession;
 use App\Models\RaceWeekend;
 use App\Models\SessionResult;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Collection;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit\Framework\Attributes\CoversClass;
-use Tests\TestCase;
 use RuntimeException;
+use Tests\TestCase;
 
-#[CoversClass(ImportResultsJob::class)]
-final class ImportResultsJobTest extends TestCase
+final class ImportSessionResultsTest extends TestCase
 {
     use RefreshDatabase;
+
     public function test_the_result_will_be_saved_if_every_driver_exists(): void
     {
         $this->instance(
@@ -32,7 +32,7 @@ final class ImportResultsJobTest extends TestCase
                 $mock->shouldReceive('scrape')
                     ->with(2024, 'bahrein', SessionType::Race)
                     ->once()
-                    ->andReturn(new \Illuminate\Support\Collection([
+                    ->andReturn(new Collection([
                         'Max Verstappen',
                         'Sergio Perez',
                         'Lando Norris',
@@ -73,9 +73,9 @@ final class ImportResultsJobTest extends TestCase
             ->create();
 
         $raceSession = $raceWeekend->raceSessions->first();
-        $this->queryCounted(fn () => Bus::dispatchSync(new ImportResultsJob($raceSession)));
+        $this->queryCounted(fn () => $this->app->make(ImportSessionResults::class)->handle($raceSession));
 
-        $this->assertQueryCount(4);
+        $this->assertQueryCount(5);
         $this->assertDatabaseCount(SessionResult::class, 1);
         $this->assertNotNull($raceSession->sessionResult);
         $this->assertSame('Max Verstappen', $raceSession->sessionResult->p1->name);
@@ -98,7 +98,7 @@ final class ImportResultsJobTest extends TestCase
                 $mock->shouldReceive('scrape')
                     ->with(2024, 'bahrein', SessionType::Race)
                     ->once()
-                    ->andReturn(new \Illuminate\Support\Collection([
+                    ->andReturn(new Collection([
                         'Max Verstappen',
                     ]));
             })
@@ -117,6 +117,38 @@ final class ImportResultsJobTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Driver with name Max Verstappen could not be found.');
-        Bus::dispatchSync(new ImportResultsJob($raceSession));
+        $this->app->make(ImportSessionResults::class)->handle($raceSession);
+    }
+
+    public function test_it_calculates_scores(): void
+    {
+        $this->instance(
+            SessionResultScraper::class,
+            Mockery::mock(SessionResultScraper::class, function (MockInterface $mock): void {
+                $mock->shouldReceive('scrape')
+                    ->with(2024, 'bahrein', SessionType::Race)
+                    ->once()
+                    ->andReturn((new Collection())->pad(10, 'Max Verstappen'));
+            })
+        );
+
+        Driver::factory()->create(['name' => 'Max Verstappen']);
+
+        $raceWeekend = RaceWeekend::factory()
+            ->has(RaceSession::factory()->state([
+                'session_start' => new DateTime('2024-01-01'),
+                'type' => SessionType::Race,
+            ]))
+            ->create([
+                'stats_f1_name' => 'bahrein'
+            ]);
+
+        $raceSession = $raceWeekend->raceSessions->first();
+        $this->mock(CalculateScores::class)
+            ->expects('handle')
+            ->once()
+            ->withArgs(fn (RaceSession $session): bool => $session->id === $raceSession->id);
+
+        $this->app->make(ImportSessionResults::class)->handle($raceSession);
     }
 }

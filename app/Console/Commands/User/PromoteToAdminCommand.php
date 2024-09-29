@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\User;
 
-use App\Jobs\User\PromoteToAdminJob;
+use App\Actions\Authorization\PromoteUserToAdmin;
 use App\Models\User;
-use Illuminate\Bus\Dispatcher;
 use Illuminate\Console\Command;
 use Laravel\Prompts\SearchPrompt;
 
@@ -29,7 +28,7 @@ class PromoteToAdminCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(Dispatcher $dispatcher): int
+    public function handle(PromoteUserToAdmin $action): int
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -42,7 +41,8 @@ class PromoteToAdminCommand extends Command
             return Command::FAILURE;
         }
 
-        $dispatcher->dispatchSync(new PromoteToAdminJob($user));
+        $action->handle($user);
+
         $this->info('User is successfully promoted to an administrator!');
 
         return Command::SUCCESS;

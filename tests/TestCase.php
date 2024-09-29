@@ -7,6 +7,7 @@ namespace Tests;
 use Closure;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Override;
 use RuntimeException;
 
@@ -43,4 +44,16 @@ abstract class TestCase extends BaseTestCase
 
         $this->assertCount($value, DB::getQueryLog());
     }
+
+    protected function assertFileContains(array $array, string $file): void
+    {
+        $this->assertFileExists($file);
+
+        $contents = File::get($file);
+
+        foreach ($array as $expected) {
+            $this->assertStringContainsString($expected, $contents);
+        }
+    }
+
 }
