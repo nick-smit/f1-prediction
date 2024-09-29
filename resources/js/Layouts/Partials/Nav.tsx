@@ -98,17 +98,19 @@ export default function Nav({ user }: Props) {
             }
 
             return (
-                <Menu key={item.text}>
+                <Menu key={item.text} variant={'nav'}>
                     <MenuButton p={2}>
-                        {item.text} <ChevronDownIcon />
+                        {item.text}
+                        <ChevronDownIcon />
                     </MenuButton>
                     <MenuList>
                         {item.items.map((menuItem) => (
-                            <MenuItem key={menuItem.text}>
-                                <LinkBridge href={menuItem.href}>
-                                    {menuItem.text}
-                                </LinkBridge>
-                            </MenuItem>
+                            <LinkBridge
+                                key={menuItem.href}
+                                href={menuItem.href}
+                            >
+                                <MenuItem>{menuItem.text}</MenuItem>
+                            </LinkBridge>
                         ))}
                     </MenuList>
                 </Menu>

@@ -8,6 +8,7 @@ import {
     selectTheme,
 } from '@/Config/Theme/FormElements';
 import { tableTheme } from '@/Config/Theme/Table';
+import { menuTheme } from '@/Config/Theme/Menu';
 
 const config: ThemeConfig = {
     initialColorMode: 'dark',
@@ -56,6 +57,7 @@ const theme = extendTheme({
         Button: buttonTheme,
         Checkbox: checkboxTheme,
         Drawer: drawerTheme,
+        Menu: menuTheme,
         Input: inputTheme,
         Select: selectTheme,
         Table: tableTheme,
