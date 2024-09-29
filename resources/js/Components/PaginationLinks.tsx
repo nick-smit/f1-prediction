@@ -4,7 +4,7 @@ import { Paginator } from '@/types';
 
 type Props = {
     links: Paginator<never>['links'];
-    only: string[];
+    only?: string[];
 };
 
 export default function PaginationLinks({ links, only }: Props): ReactElement {

@@ -32,5 +32,6 @@ use App\Http\Controllers\Auth\RegisterController;
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
+    \Illuminate\Support\Facades\Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout');
     \Illuminate\Support\Facades\Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 });

@@ -1,6 +1,3 @@
-import type { FormEventHandler } from 'react';
-import useChange from '@/hooks/useChange';
-
 type Date = string;
 type DateTime = string;
 
@@ -70,13 +67,4 @@ export type Paginator<T> = {
     prev_page_url: string | null;
     to: number;
     total: number;
-};
-
-export type UseForm<FormValues> = {
-    data: FormValues;
-    errors: Partial<Record<keyof FormValues, string>>;
-    change: ReturnType<typeof useChange>;
-    submit: FormEventHandler;
-    processing: boolean;
-    reset?: (...fields: (keyof FormValues)[]) => void;
 };

@@ -1,16 +1,14 @@
 import { useForm } from '@inertiajs/react';
 import { type FormEventHandler, useCallback } from 'react';
 import useChange from '@/hooks/useChange';
-import { Driver, UseForm } from '@/types';
+import { Driver } from '@/types';
 
 interface DriverFormValues {
     number: string;
     name: string;
 }
 
-export default function useDriverForm(
-    driver?: Driver
-): UseForm<DriverFormValues> {
+export default function useDriverForm(driver?: Driver) {
     const { data, setData, post, put, processing, errors } =
         useForm<DriverFormValues>({
             number: String(driver?.number ?? ''),

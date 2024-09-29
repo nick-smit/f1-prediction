@@ -16,6 +16,7 @@ import useContractForm from '@/Pages/Admin/Contracts/hooks/useContractForm';
 import LinkBridge from '@/Components/LinkBridge';
 import React from 'react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
+import { formatForInput } from '@/helpers/date';
 
 type Props = {
     contract?: DriverContract;
@@ -29,7 +30,7 @@ export default function ContractForm({ contract, drivers, teams }: Props) {
 
     return (
         <form onSubmit={submit}>
-            <Stack spacing={4} maxW={300}>
+            <Stack spacing={4}>
                 <FormControl isRequired isInvalid={Boolean(errors.driver)}>
                     <FormLabel>Driver</FormLabel>
                     <Select
@@ -69,7 +70,7 @@ export default function ContractForm({ contract, drivers, teams }: Props) {
                     <Input
                         type="date"
                         name={'start_date'}
-                        value={data.start_date}
+                        value={formatForInput(data.start_date)}
                         onChange={change}
                     />
                     <FormErrorMessage></FormErrorMessage>
@@ -81,7 +82,7 @@ export default function ContractForm({ contract, drivers, teams }: Props) {
                         <Input
                             type="date"
                             name={'end_date'}
-                            value={data.end_date}
+                            value={formatForInput(data.end_date)}
                             onChange={change}
                         />
                         {data.end_date.length > 0 ? (
@@ -99,12 +100,11 @@ export default function ContractForm({ contract, drivers, teams }: Props) {
                     <FormErrorMessage>{errors.end_date}</FormErrorMessage>
                 </FormControl>
 
-                <HStack>
+                <HStack spacing={4} justify={'end'}>
                     <LinkBridge href={route('admin.teams.index')}>
-                        <Button variant={'secondary'}>Cancel</Button>
+                        Cancel
                     </LinkBridge>
                     <Button
-                        variant={'primary'}
                         type={'submit'}
                         isLoading={processing}
                         disabled={processing}

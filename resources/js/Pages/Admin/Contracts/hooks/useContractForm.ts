@@ -1,4 +1,4 @@
-import { DriverContract, UseForm } from '@/types';
+import { DriverContract } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { type FormEventHandler, useCallback } from 'react';
 import useChange from '@/hooks/useChange';
@@ -11,11 +11,9 @@ type ContractFormValues = {
     end_date: string;
 };
 
-export default function useContractForm(
-    contract?: DriverContract
-): UseForm<ContractFormValues> {
+export default function useContractForm(contract?: DriverContract) {
     const [driverId] = useSearchParameter('driver_id');
-    console.log(contract);
+
     const { data, setData, post, put, processing, errors, reset } =
         useForm<ContractFormValues>({
             team: String(contract?.team_id ?? ''),

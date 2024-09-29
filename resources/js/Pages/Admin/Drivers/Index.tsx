@@ -1,6 +1,5 @@
 import Layout from '@/Layouts/Layout';
-import AdminBox from '@/Components/AdminBox';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import {
     Button,
     Checkbox,
@@ -28,10 +27,7 @@ import React, { useEffect } from 'react';
 import useSearchParameter from '@/hooks/useSearchParameter';
 import { useDebounce } from '@uidotdev/usehooks';
 import PaginationLinks from '@/Components/PaginationLinks';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-
-dayjs.extend(localizedFormat);
+import { formatLocalizedDate } from '@/helpers/date';
 
 type Driver = {
     id: number;
@@ -62,166 +58,145 @@ export default function ({ drivers }: Props) {
     }, [debouncedSearch, hideInactive]);
 
     return (
-        <Layout>
-            <Head title={'Manage drivers'} />
-            <AdminBox>
-                <Stack spacing={2}>
-                    <Flex justify={'space-between'}>
-                        <Heading size={'lg'} mb={8}>
-                            Manage drivers
-                        </Heading>
-                        <LinkBridge href={route('admin.drivers.create')}>
-                            <Button>New Driver</Button>
-                        </LinkBridge>
-                    </Flex>
-                    <HStack
-                        spacing={4}
-                        justifyContent={'end'}
-                        alignItems={'center'}
+        <Layout title="Manage drivers">
+            <Stack spacing={2}>
+                <Flex justify={'space-between'}>
+                    <Heading size={'lg'} mb={8}>
+                        Manage drivers
+                    </Heading>
+                    <LinkBridge href={route('admin.drivers.create')}>
+                        <Button>New Driver</Button>
+                    </LinkBridge>
+                </Flex>
+                <HStack
+                    spacing={4}
+                    justifyContent={'end'}
+                    alignItems={'center'}
+                >
+                    <Checkbox
+                        defaultChecked={hideInactive === '1'}
+                        checked={hideInactive === '1'}
+                        onChange={(e) => {
+                            setHideInactive(e.target.checked ? '1' : '0');
+                        }}
                     >
-                        <Checkbox
-                            defaultChecked={Boolean(hideInactive)}
-                            checked={Boolean(hideInactive)}
-                            onChange={(e) => {
-                                setHideInactive(e.target.checked ? '1' : '0');
-                            }}
-                        >
-                            Hide inactive drivers
-                        </Checkbox>
-                        <InputGroup w={300}>
-                            <Input
-                                placeholder="Search..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                            <InputRightElement pointerEvents="none">
-                                <SearchIcon color="gray.300" />
-                            </InputRightElement>
-                        </InputGroup>
-                    </HStack>
-                    <TableContainer>
-                        <Table size="sm">
-                            <Thead>
-                                <Tr>
-                                    <Th>Driver</Th>
-                                    <Th isNumeric>Number</Th>
-                                    <Th>Current team</Th>
-                                    <Th colSpan={2}>Current contract</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {drivers.data.map((driver) => (
-                                    <Tr
-                                        key={driver.id}
-                                        _hover={{ bg: '#252C3A' }}
-                                    >
-                                        <Td>{driver.name}</Td>
-                                        <Td isNumeric>{driver.number}</Td>
-                                        <Td>
-                                            {driver.has_contract
-                                                ? driver.current_team_name
-                                                : '-'}
-                                        </Td>
-                                        <Td>
-                                            {driver.has_contract
-                                                ? dayjs(
-                                                      driver.current_contract_start
-                                                  ).format('L')
-                                                : '-'}
-                                        </Td>
-                                        <Td>
-                                            <HStack
-                                                spacing={2}
-                                                justifyContent={'end'}
+                        Hide inactive drivers
+                    </Checkbox>
+                    <InputGroup w={300}>
+                        <Input
+                            placeholder="Search..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <InputRightElement pointerEvents="none">
+                            <SearchIcon />
+                        </InputRightElement>
+                    </InputGroup>
+                </HStack>
+                <TableContainer>
+                    <Table size="sm">
+                        <Thead>
+                            <Tr>
+                                <Th>Driver</Th>
+                                <Th isNumeric>Number</Th>
+                                <Th>Current team</Th>
+                                <Th colSpan={2}>Current contract</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {drivers.data.map((driver) => (
+                                <Tr key={driver.id}>
+                                    <Td>{driver.name}</Td>
+                                    <Td isNumeric>{driver.number}</Td>
+                                    <Td>
+                                        {driver.has_contract
+                                            ? driver.current_team_name
+                                            : '-'}
+                                    </Td>
+                                    <Td>
+                                        {driver.has_contract
+                                            ? formatLocalizedDate(
+                                                  driver.current_contract_start
+                                              )
+                                            : '-'}
+                                    </Td>
+                                    <Td>
+                                        <HStack
+                                            spacing={2}
+                                            justifyContent={'end'}
+                                        >
+                                            <LinkBridge
+                                                href={route(
+                                                    'admin.drivers.edit',
+                                                    { driver: driver.id }
+                                                )}
                                             >
+                                                <IconButton
+                                                    variant="action"
+                                                    aria-label={'Edit driver'}
+                                                    title={'Edit driver'}
+                                                    icon={<EditIcon />}
+                                                />
+                                            </LinkBridge>
+                                            {driver.has_contract ? (
                                                 <LinkBridge
                                                     href={route(
-                                                        'admin.drivers.edit',
-                                                        { driver: driver.id }
+                                                        'admin.contracts.edit',
+                                                        {
+                                                            contract:
+                                                                driver.current_contract_id,
+                                                        }
                                                     )}
                                                 >
                                                     <IconButton
-                                                        size={'xsm'}
+                                                        variant="action"
                                                         aria-label={
-                                                            'Edit driver'
+                                                            'Change contract'
                                                         }
-                                                        title={'Edit driver'}
-                                                        icon={<EditIcon />}
-                                                        variant={'secondary'}
+                                                        title={
+                                                            'Change contract'
+                                                        }
+                                                        icon={<CalendarIcon />}
                                                     />
                                                 </LinkBridge>
-                                                {driver.has_contract ? (
-                                                    <LinkBridge
-                                                        href={route(
-                                                            'admin.contracts.edit',
-                                                            {
-                                                                contract:
-                                                                    driver.current_contract_id,
-                                                            }
-                                                        )}
-                                                    >
-                                                        <IconButton
-                                                            size={'xsm'}
-                                                            aria-label={
-                                                                'Change contract'
-                                                            }
-                                                            title={
-                                                                'Change contract'
-                                                            }
-                                                            icon={
-                                                                <CalendarIcon />
-                                                            }
-                                                            variant={
-                                                                'secondary'
-                                                            }
-                                                        />
-                                                    </LinkBridge>
-                                                ) : (
-                                                    <LinkBridge
-                                                        href={route(
-                                                            'admin.contracts.create',
-                                                            {
-                                                                driver_id:
-                                                                    driver.id,
-                                                            }
-                                                        )}
-                                                    >
-                                                        <IconButton
-                                                            size={'xsm'}
-                                                            aria-label={
-                                                                'Create contract'
-                                                            }
-                                                            title={
-                                                                'Create contract'
-                                                            }
-                                                            icon={
-                                                                <CalendarIcon />
-                                                            }
-                                                            variant={
-                                                                'secondary'
-                                                            }
-                                                        />
-                                                    </LinkBridge>
-                                                )}
-                                            </HStack>
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </Tbody>
-
-                            <Tfoot>
-                                <Tr>
-                                    <Td colSpan={5} textAlign={'center'}>
-                                        <PaginationLinks
-                                            links={drivers.links}
-                                        />
+                                            ) : (
+                                                <LinkBridge
+                                                    href={route(
+                                                        'admin.contracts.create',
+                                                        {
+                                                            driver_id:
+                                                                driver.id,
+                                                        }
+                                                    )}
+                                                >
+                                                    <IconButton
+                                                        variant="action"
+                                                        aria-label={
+                                                            'Create contract'
+                                                        }
+                                                        title={
+                                                            'Create contract'
+                                                        }
+                                                        icon={<CalendarIcon />}
+                                                    />
+                                                </LinkBridge>
+                                            )}
+                                        </HStack>
                                     </Td>
                                 </Tr>
-                            </Tfoot>
-                        </Table>
-                    </TableContainer>
-                </Stack>
-            </AdminBox>
+                            ))}
+                        </Tbody>
+
+                        <Tfoot>
+                            <Tr>
+                                <Td colSpan={5} textAlign={'center'}>
+                                    <PaginationLinks links={drivers.links} />
+                                </Td>
+                            </Tr>
+                        </Tfoot>
+                    </Table>
+                </TableContainer>
+            </Stack>
         </Layout>
     );
 }

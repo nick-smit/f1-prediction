@@ -21,7 +21,7 @@ export default function DriverForm({ driver }: Props) {
 
     return (
         <form onSubmit={submit}>
-            <Stack spacing={4} maxW={300}>
+            <Stack spacing={4}>
                 <FormControl isRequired isInvalid={Boolean(errors.name)}>
                     <FormLabel>Name</FormLabel>
                     <Input name={'name'} value={data.name} onChange={change} />
@@ -37,12 +37,11 @@ export default function DriverForm({ driver }: Props) {
                     />
                     <FormErrorMessage>{errors.number}</FormErrorMessage>
                 </FormControl>
-                <HStack>
+                <HStack spacing={4} justifyContent={'end'}>
                     <LinkBridge href={route('admin.drivers.index')}>
-                        <Button variant={'secondary'}>Cancel</Button>
+                        Cancel
                     </LinkBridge>
                     <Button
-                        variant={'primary'}
                         type={'submit'}
                         isLoading={processing}
                         disabled={processing}

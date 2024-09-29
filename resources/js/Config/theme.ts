@@ -1,10 +1,16 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
-import { Button, IconButton } from '@/Config/Theme/Button';
-import Link from '@/Config/Theme/Link';
-import Stat from '@/Config/Theme/Stat';
+import { drawerTheme } from '@/Config/Theme/Drawer';
+import backgroundImg from '@/assets/asphalt.png';
+import {
+    buttonTheme,
+    checkboxTheme,
+    inputTheme,
+    selectTheme,
+} from '@/Config/Theme/FormElements';
+import { tableTheme } from '@/Config/Theme/Table';
 
 const config: ThemeConfig = {
-    initialColorMode: 'light',
+    initialColorMode: 'dark',
     useSystemColorMode: false,
 };
 
@@ -12,24 +18,47 @@ const theme = extendTheme({
     config,
     styles: {
         global: {
+            body: {
+                bgColor: '#1b1a1a',
+                bgImg: backgroundImg, // Might want to optimize with imageSet
+                color: 'text',
+            },
             'body, #app': {
                 minH: '100vh',
             },
         },
     },
+    colors: {
+        brand: {
+            50: '#90BBBD',
+            100: '#84B3B6',
+            200: '#76ABAE',
+            300: '#64A0A3',
+            400: '#589295',
+            500: '#4F8386',
+            600: '#477679',
+            700: '#406A6D',
+            800: '#3A5F62',
+            900: '#345558',
+        },
+    },
     semanticTokens: {
         colors: {
-            primary: {
-                default: '#6457CF',
-                _dark: '#A8A0E4',
+            dark: {
+                1: '#222831',
+                2: '#424b5a',
             },
+            text: '#CECECE',
+            error: 'red.300',
         },
     },
     components: {
-        Button,
-        IconButton,
-        Link,
-        Stat,
+        Button: buttonTheme,
+        Checkbox: checkboxTheme,
+        Drawer: drawerTheme,
+        Input: inputTheme,
+        Select: selectTheme,
+        Table: tableTheme,
     },
 });
 
