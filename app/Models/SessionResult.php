@@ -6,11 +6,11 @@ namespace App\Models;
 
 use Database\Factories\SessionResultFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  *
@@ -121,7 +121,7 @@ class SessionResult extends Model
 
     public function getDrivers(): Collection
     {
-        return Driver::query()
+        $drivers = Driver::query()
             ->whereIn('id', [
                 $this->p1_id,
                 $this->p2_id,
@@ -133,6 +133,20 @@ class SessionResult extends Model
                 $this->p8_id,
                 $this->p9_id,
                 $this->p10_id,
-            ])->get();
+            ])->get()
+            ->keyBy('id');
+
+        return new Collection([
+            $drivers[$this->p1_id],
+            $drivers[$this->p2_id],
+            $drivers[$this->p3_id],
+            $drivers[$this->p4_id],
+            $drivers[$this->p5_id],
+            $drivers[$this->p6_id],
+            $drivers[$this->p7_id],
+            $drivers[$this->p8_id],
+            $drivers[$this->p9_id],
+            $drivers[$this->p10_id],
+        ]);
     }
 }

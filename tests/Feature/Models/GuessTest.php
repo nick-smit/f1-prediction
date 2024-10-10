@@ -41,4 +41,22 @@ final class GuessTest extends TestCase
         $this->assertTrue($success);
         $this->assertDatabaseCount(Guess::class, 1);
     }
+
+    public function test_a_guess_can_retrieve_a_collection_of_drivers(): void
+    {
+        $guess = Guess::factory()->create();
+
+        $driversCollection = $guess->getDrivers();
+        $this->assertCount(10, $driversCollection);
+        $this->assertContainsEquals($guess->p1, $driversCollection);
+        $this->assertContainsEquals($guess->p2, $driversCollection);
+        $this->assertContainsEquals($guess->p3, $driversCollection);
+        $this->assertContainsEquals($guess->p4, $driversCollection);
+        $this->assertContainsEquals($guess->p5, $driversCollection);
+        $this->assertContainsEquals($guess->p6, $driversCollection);
+        $this->assertContainsEquals($guess->p7, $driversCollection);
+        $this->assertContainsEquals($guess->p8, $driversCollection);
+        $this->assertContainsEquals($guess->p9, $driversCollection);
+        $this->assertContainsEquals($guess->p10, $driversCollection);
+    }
 }

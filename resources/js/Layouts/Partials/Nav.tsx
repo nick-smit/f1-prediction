@@ -52,6 +52,12 @@ const navigation: NavigationArray = [
     },
     {
         type: 'href',
+        href: route('prediction.index'),
+        text: 'Predict',
+        check: () => true,
+    },
+    {
+        type: 'href',
         href: '#',
         text: 'Leaderboard',
         check: () => true,
@@ -77,8 +83,6 @@ const navigation: NavigationArray = [
     },
 ];
 
-// Todo: Implement layout on all pages
-// Todo: Remove old layout
 // Todo: Create a logo
 // Todo: Fix border in mobile nav
 
@@ -141,6 +145,7 @@ export default function Nav({ user }: Props) {
                 display={{ lg: 'none' }}
                 ref={menuButtonRef}
                 onClick={handleOpenMenu}
+                variant={'nav'}
             />
 
             <Drawer

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\GrandPrixGuessr\Session\SessionType;
+use App\Models\RaceSession;
 use App\Models\RaceWeekend;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Override;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RaceSession>
+ * @extends Factory<RaceSession>
  */
 class RaceSessionFactory extends Factory
 {
@@ -29,5 +30,15 @@ class RaceSessionFactory extends Factory
             'session_end' => fake()->dateTime,
             'type' => SessionType::Race,
         ];
+    }
+
+    public function qualification(): self
+    {
+        return $this->state(['type' => SessionType::Qualification]);
+    }
+
+    public function race(): self
+    {
+        return $this->state(['type' => SessionType::Race]);
     }
 }

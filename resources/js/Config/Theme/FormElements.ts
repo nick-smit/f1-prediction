@@ -1,5 +1,6 @@
 import {
     createMultiStyleConfigHelpers,
+    defineStyle,
     defineStyleConfig,
 } from '@chakra-ui/react';
 import { inputAnatomy, selectAnatomy } from '@chakra-ui/anatomy';
@@ -19,6 +20,9 @@ export const buttonTheme = defineStyleConfig({
                 transform: 'scale(1.1)',
             },
         },
+        nav: defineStyle({
+            background: 'transparent',
+        }),
     },
 });
 

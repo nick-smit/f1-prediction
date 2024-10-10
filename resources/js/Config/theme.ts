@@ -9,6 +9,10 @@ import {
 } from '@/Config/Theme/FormElements';
 import { tableTheme } from '@/Config/Theme/Table';
 import { menuTheme } from '@/Config/Theme/Menu';
+import { cardTheme } from '@/Config/Theme/Card';
+import { statTheme } from '@/Config/Theme/Stat';
+import { listTheme } from '@/Config/Theme/List';
+import { tabsTheme } from '@/Config/Theme/Tabs';
 
 const config: ThemeConfig = {
     initialColorMode: 'dark',
@@ -55,12 +59,16 @@ const theme = extendTheme({
     },
     components: {
         Button: buttonTheme,
+        Card: cardTheme,
         Checkbox: checkboxTheme,
         Drawer: drawerTheme,
+        List: listTheme,
         Menu: menuTheme,
         Input: inputTheme,
         Select: selectTheme,
+        Stat: statTheme,
         Table: tableTheme,
+        Tabs: tabsTheme,
     },
 });
 

@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Driver;
+use App\Models\Guess;
 use App\Models\RaceSession;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Override;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Guess>
+ * @extends Factory<Guess>
  */
 class GuessFactory extends Factory
 {
@@ -38,5 +40,21 @@ class GuessFactory extends Factory
             'p10_id' => Driver::factory(),
             'score' => null,
         ];
+    }
+
+    public function drivers(Collection $drivers)
+    {
+        return $this->state([
+            'p1_id' => $drivers->get(0),
+            'p2_id' => $drivers->get(1),
+            'p3_id' => $drivers->get(2),
+            'p4_id' => $drivers->get(3),
+            'p5_id' => $drivers->get(4),
+            'p6_id' => $drivers->get(5),
+            'p7_id' => $drivers->get(6),
+            'p8_id' => $drivers->get(7),
+            'p9_id' => $drivers->get(8),
+            'p10_id' => $drivers->get(9),
+        ]);
     }
 }

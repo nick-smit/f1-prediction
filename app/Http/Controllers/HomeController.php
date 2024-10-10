@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\RaceSession;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
@@ -14,6 +15,20 @@ class HomeController
      */
     public function __invoke(ResponseFactory $responseFactory): Response
     {
-        return $responseFactory->render('Home');
+        $nextSession = RaceSession::query()
+            ->with('raceWeekend')
+            ->whereGuessable(true)
+            ->whereRaw('`session_start` > NOW()')
+            ->orderBy('session_start')
+            ->first();
+
+        return $responseFactory->render('Home/Home', [
+            'next_session' => $nextSession instanceof RaceSession ? [
+                'id' => $nextSession->id,
+                'race_weekend_name' => $nextSession->raceWeekend->name,
+                'type' => $nextSession->type,
+                'session_start' => $nextSession->session_start,
+            ] : null,
+        ]);
     }
 }

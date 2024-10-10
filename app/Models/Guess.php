@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  *
@@ -67,6 +68,11 @@ use Illuminate\Support\Carbon;
 class Guess extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'race_session_id',
+    ];
 
     public function user(): BelongsTo
     {
@@ -126,5 +132,36 @@ class Guess extends Model
     public function p10(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
+    }
+
+    public function getDrivers(): Collection
+    {
+        $drivers = Driver::query()
+            ->whereIn('id', [
+                $this->p1_id,
+                $this->p2_id,
+                $this->p3_id,
+                $this->p4_id,
+                $this->p5_id,
+                $this->p6_id,
+                $this->p7_id,
+                $this->p8_id,
+                $this->p9_id,
+                $this->p10_id,
+            ])->get()
+            ->keyBy('id');
+
+        return new Collection([
+            $drivers[$this->p1_id],
+            $drivers[$this->p2_id],
+            $drivers[$this->p3_id],
+            $drivers[$this->p4_id],
+            $drivers[$this->p5_id],
+            $drivers[$this->p6_id],
+            $drivers[$this->p7_id],
+            $drivers[$this->p8_id],
+            $drivers[$this->p9_id],
+            $drivers[$this->p10_id],
+        ]);
     }
 }

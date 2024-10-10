@@ -68,3 +68,5 @@ export type Paginator<T> = {
     to: number;
     total: number;
 };
+
+export type Nullable<T> = T | null;

@@ -6,12 +6,15 @@ namespace Tests\Feature\Actions\Authentication;
 
 use App\Actions\Authentication\SignUserOff;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 #[CoversClass(SignUserOff::class)]
 final class SignUserOffTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic feature test example.
      */
