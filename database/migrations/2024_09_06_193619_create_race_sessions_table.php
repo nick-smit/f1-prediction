@@ -13,7 +13,6 @@ return new class () extends Migration {
         Schema::create('race_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('race_weekend_id')->constrained();
-            $table->boolean('guessable');
             $table->dateTime('session_start');
             $table->dateTime('session_end');
             $table->string('type');

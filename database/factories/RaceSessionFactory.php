@@ -25,7 +25,6 @@ class RaceSessionFactory extends Factory
     {
         return [
             'race_weekend_id' => RaceWeekend::factory(),
-            'guessable' => true,
             'session_start' => fake()->dateTime,
             'session_end' => fake()->dateTime,
             'type' => SessionType::Race,

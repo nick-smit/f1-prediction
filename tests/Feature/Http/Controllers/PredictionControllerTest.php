@@ -8,7 +8,7 @@ use App\Http\Controllers\PredictionController;
 use App\Http\Requests\Prediction\PredictionRequest;
 use App\Models\Driver;
 use App\Models\DriverContract;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\RaceWeekend;
 use App\Models\User;
@@ -49,7 +49,7 @@ final class PredictionControllerTest extends TestCase
 
         RaceWeekend::factory()
             ->has(RaceSession::factory()->qualification()->state(['session_start' => Carbon::tomorrow()])->has(
-                Guess::factory()->drivers(Driver::all())->state(['user_id' => $user])
+                Prediction::factory()->drivers(Driver::all())->state(['user_id' => $user])
             ))
             ->has(RaceSession::factory()->race()->state(['session_start' => Carbon::tomorrow()->addDay()]))
             ->create([
@@ -97,7 +97,7 @@ final class PredictionControllerTest extends TestCase
         ]);
 
         $response->assertOk();
-        $this->assertDatabaseHas(Guess::class, [
+        $this->assertDatabaseHas(Prediction::class, [
             'user_id' => $user->id,
             'race_session_id' => $session->id,
             'p1_id' => $drivers->get(0)->id,
@@ -194,16 +194,5 @@ final class PredictionControllerTest extends TestCase
                 'prediction' => 'Not all drivers exists or have active contracts.',
             ],
         ];
-    }
-
-    public function test_making_a_prediction_for_a_non_guessable_session_results_in_a_not_found_error(): void
-    {
-        $user = User::factory()->create();
-        $raceSession = RaceSession::factory()->create(['guessable' => false]);
-
-        $route = route('prediction.store', ['raceSession' => $raceSession->id]);
-        $response = $this->actingAs($user)->postJson($route);
-
-        $response->assertNotFound();
     }
 }

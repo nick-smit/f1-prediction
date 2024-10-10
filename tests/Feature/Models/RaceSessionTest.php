@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Models;
 
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\RaceWeekend;
 use App\Models\SessionResult;
@@ -41,16 +41,16 @@ final class RaceSessionTest extends TestCase
         $this->assertNotNull($raceSession->sessionResult);
     }
 
-    public function test_a_race_session_can_have_guesses(): void
+    public function test_a_race_session_can_have_predictions(): void
     {
         $raceSession = RaceSession::factory()->create();
-        $guesses = Guess::factory()->count(10)->make(['race_session_id' => null]);
+        $predictions = Prediction::factory()->count(10)->make(['race_session_id' => null]);
 
-        $raceSession->guesses()->saveMany($guesses);
+        $raceSession->predictions()->saveMany($predictions);
 
         $raceSession = $raceSession->refresh();
 
-        $this->assertDatabaseCount(Guess::class, 10);
-        $this->assertNotEmpty($raceSession->guesses->toArray());
+        $this->assertDatabaseCount(Prediction::class, 10);
+        $this->assertNotEmpty($raceSession->predictions->toArray());
     }
 }

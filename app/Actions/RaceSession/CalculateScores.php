@@ -8,7 +8,7 @@ use App\GrandPrixGuessr\Calculation\ScoreCalculation;
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMap;
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMapFactory;
 use App\GrandPrixGuessr\DTO\TopTen;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use Assert\Assertion;
@@ -24,7 +24,7 @@ class CalculateScores
      */
     public function handle(RaceSession $raceSession): void
     {
-        if ($raceSession->guesses()->count() === 0) {
+        if ($raceSession->predictions()->count() === 0) {
             // Nothing to do.
             return;
         }
@@ -34,30 +34,30 @@ class CalculateScores
 
         $sessionResultDTO = $this->getTopTen($driverDTOMap, $raceSession->sessionResult);
 
-        /** @var Guess $guess */
-        foreach ($raceSession->guesses()->cursor() as $guess) {
-            $guessDTO = $this->getTopTen($driverDTOMap, $guess);
+        /** @var Prediction $prediction */
+        foreach ($raceSession->predictions()->cursor() as $prediction) {
+            $predictionDTO = $this->getTopTen($driverDTOMap, $prediction);
 
-            $score = $this->scoreCalculation->calculate($sessionResultDTO, $guessDTO);
+            $score = $this->scoreCalculation->calculate($sessionResultDTO, $predictionDTO);
 
-            $guess->score = $score;
-            $guess->save();
+            $prediction->score = $score;
+            $prediction->save();
         }
     }
 
-    private function getTopTen(DriverDTOMap $driverDTOMap, SessionResult|Guess $sessionResultOrGuess): TopTen
+    private function getTopTen(DriverDTOMap $driverDTOMap, SessionResult|Prediction $sessionResultOrPrediction): TopTen
     {
         return TopTen::fromArray([
-            $driverDTOMap->getDriver($sessionResultOrGuess->p1_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p2_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p3_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p4_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p5_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p6_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p7_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p8_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p9_id),
-            $driverDTOMap->getDriver($sessionResultOrGuess->p10_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p1_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p2_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p3_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p4_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p5_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p6_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p7_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p8_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p9_id),
+            $driverDTOMap->getDriver($sessionResultOrPrediction->p10_id),
         ]);
     }
 

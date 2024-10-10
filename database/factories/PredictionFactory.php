@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Driver;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Override;
 
 /**
- * @extends Factory<Guess>
+ * @extends Factory<Prediction>
  */
-class GuessFactory extends Factory
+class PredictionFactory extends Factory
 {
     /**
      * Define the model's default state.

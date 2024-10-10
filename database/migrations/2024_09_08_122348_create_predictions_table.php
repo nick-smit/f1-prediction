@@ -10,7 +10,7 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('guesses', function (Blueprint $table) {
+        Schema::create('predictions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('race_session_id')->constrained();
             $table->foreignId('user_id')->constrained();
@@ -36,6 +36,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('guesses');
+        Schema::dropIfExists('predictions');
     }
 };

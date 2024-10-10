@@ -6,7 +6,7 @@ namespace Tests\Feature\Actions\Prediction;
 
 use App\Actions\Prediction\StorePrediction;
 use App\Models\Driver;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\User;
 use Carbon\Carbon;
@@ -31,7 +31,7 @@ final class StorePredictionTest extends TestCase
 
         $action->handle($user, $raceSession, $drivers->map(fn (Driver $driver) => $driver->id));
 
-        $this->assertDatabaseHas(Guess::class, [
+        $this->assertDatabaseHas(Prediction::class, [
             'user_id' => $user->id,
             'race_session_id' => $raceSession->id,
             'p1_id' => $drivers->get(0)->id,
@@ -50,7 +50,7 @@ final class StorePredictionTest extends TestCase
 
     public function test_it_updates_an_existing_prediction(): void
     {
-        $prediction = Guess::factory()->create();
+        $prediction = Prediction::factory()->create();
 
         $drivers = (new Collection([
             $prediction->p1,
@@ -69,7 +69,7 @@ final class StorePredictionTest extends TestCase
 
         $action->handle($prediction->user, $prediction->raceSession, $drivers->map(fn (Driver $driver) => $driver->id));
 
-        $this->assertDatabaseHas(Guess::class, [
+        $this->assertDatabaseHas(Prediction::class, [
             'user_id' => $prediction->user_id,
             'race_session_id' => $prediction->race_session_id,
             'p1_id' => $drivers->get(0)->id,

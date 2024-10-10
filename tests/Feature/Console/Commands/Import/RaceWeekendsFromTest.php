@@ -30,6 +30,6 @@ final class RaceWeekendsFromTest extends TestCase
 
         $result->assertSuccessful();
         $result->expectsOutput('Importing 2 race weekends');
-        $result->expectsOutput('Imported 10 race sessions');
+        $result->expectsOutput('Imported 4 race sessions');
     }
 }

@@ -78,22 +78,22 @@ class RaceWeekendsFromIcs extends Command
             $raceWeekend->save();
 
             foreach ($events as $event) {
+                $eventType = match ($event->additionalProperties['categories_array'][1]) {
+                    'Qualifying,F1' => SessionType::Qualification,
+                    'Grand Prix,F1' => SessionType::Race,
+                    default => null,
+                };
+
+                if ($eventType === null) {
+                    continue;
+                }
+
                 ++$importedSessions;
                 $session = new RaceSession([
                     'session_start' => $event->dtstart_tz,
                     'session_end' => $event->dtend_tz,
-                    'type' => match ($event->additionalProperties['categories_array'][1]) {
-                        'FP1,F1', 'FP2,F1', 'FP3,F1' => SessionType::Practice,
-                        'Qualifying,F1' => SessionType::Qualification,
-                        'Grand Prix,F1' => SessionType::Race,
-                        // @codeCoverageIgnoreStart
-                        'Sprint Qualifying,F1' => SessionType::SprintQualification,
-                        'Sprint,F1' => SessionType::SprintRace,
-                        // @codeCoverageIgnoreEnd
-                    }
+                    'type' => $eventType
                 ]);
-
-                $session->guessable = $session->type === SessionType::Qualification || $session->type === SessionType::Race;
 
                 $raceWeekend->raceSessions()->save($session);
             }

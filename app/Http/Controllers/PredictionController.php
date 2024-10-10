@@ -8,7 +8,7 @@ use App\Actions\Prediction\StorePrediction;
 use App\GrandPrixGuessr\Session\SessionType;
 use App\Http\Requests\Prediction\PredictionRequest;
 use App\Models\Driver;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\RaceWeekend;
 use Illuminate\Auth\AuthManager;
@@ -36,7 +36,7 @@ class PredictionController
             $qualification = $event->raceSessions
                 ->firstWhere('type', SessionType::Qualification);
 
-            $guesses = Guess::query()
+            $predictions = Prediction::query()
                 ->whereUserId($authManager->user()->id)
                 ->whereHas('raceSession', fn ($builder) => $builder->where('race_weekend_id', $event->id))
                 ->get();
@@ -50,13 +50,13 @@ class PredictionController
                 'name' => $event->name,
                 'qualification' => [
                     ...$qualification->only(['id', 'session_start']),
-                    'prediction' => $guesses
+                    'prediction' => $predictions
                         ->firstWhere('race_session_id', $qualification->id)
                         ?->getDrivers() ?? []
                 ],
                 'race' => [
                     ...$race->only(['id', 'session_start']),
-                    'prediction' => $guesses
+                    'prediction' => $predictions
                         ->firstWhere('race_session_id', $race->id)
                         ?->getDrivers() ?? [],
                 ],

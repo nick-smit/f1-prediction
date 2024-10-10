@@ -17,26 +17,26 @@ class ScoreCalculation
 
     private const int IN_TOP_BUT_MISSED_SCORE = 1;
 
-    public function calculate(TopX $sessionResult, TopX $guess): int
+    public function calculate(TopX $sessionResult, TopX $prediction): int
     {
         $resultDriverIds = array_map(static fn (Driver $driver): int => $driver->id, $sessionResult->drivers);
 
         $score = 0;
         foreach ($sessionResult as $position => $driver) {
-            $guessedDriver = $guess->drivers[$position];
-            if ($guessedDriver->id === $driver->id) {
+            $predictedDriver = $prediction->drivers[$position];
+            if ($predictedDriver->id === $driver->id) {
                 $score += self::EXACT_MATCH_SCORE;
                 continue;
             }
 
             $previousDriver = $sessionResult->drivers[$position - 1] ?? null;
             $nextDriver = $sessionResult->drivers[$position + 1] ?? null;
-            if ($guessedDriver->id === $previousDriver?->id || $guessedDriver->id === $nextDriver?->id) {
+            if ($predictedDriver->id === $previousDriver?->id || $predictedDriver->id === $nextDriver?->id) {
                 // Subtract one as this will also count the IN_TOP_BUT_MISSED_SCORE score.
                 $score += self::ONE_PLACE_OFF_SCORE;
-            } elseif ($guessedDriver->team->id === $driver->team->id) {
+            } elseif ($predictedDriver->team->id === $driver->team->id) {
                 $score += self::TEAM_MATE_SWAPPED_SCORE;
-            } elseif (in_array($guessedDriver->id, $resultDriverIds)) {
+            } elseif (in_array($predictedDriver->id, $resultDriverIds)) {
                 $score += self::IN_TOP_BUT_MISSED_SCORE;
             }
         }

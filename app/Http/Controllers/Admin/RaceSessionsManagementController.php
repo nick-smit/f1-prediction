@@ -30,9 +30,8 @@ class RaceSessionsManagementController
         return Inertia::render('Admin/RaceSessions/Index', [
             'race_sessions' => fn () => RaceSession::query()
                 ->with(['raceWeekend'])
-                ->withCount('guesses')
+                ->withCount('predictions')
                 ->withExists('sessionResult')
-                ->whereGuessable(true)
                 ->whereHas('raceWeekend', function (Builder $builder) use ($yearFilter): void {
                     $builder->whereRaw('YEAR(start_date) = ?', [$yearFilter]);
                 })
@@ -45,18 +44,17 @@ class RaceSessionsManagementController
                     'type' => $session->type->value,
                     'session_start' => $session->session_start,
                     'session_end' => $session->session_end,
-                    'guesses' => $session->guesses_count,
+                    'predictions' => $session->predictions_count,
                     'has_results' => $session->getAttribute('session_result_exists'),
                 ]),
             'action_required' => fn () => RaceSession::query()
                 ->with('raceWeekend')
                 ->select()
-                ->selectRaw('(select count(1) from `guesses` where `guesses`.`score` IS NULL and `guesses`.`race_session_id` = `race_sessions`.`id`) as guesses_count')
+                ->selectRaw('(select count(1) from `predictions` where `predictions`.`score` IS NULL and `predictions`.`race_session_id` = `race_sessions`.`id`) as predictions_count')
                 ->withExists('sessionResult')
-                ->whereGuessable(true)
                 ->whereRaw('session_end < NOW()')
                 ->having('session_result_exists', '=', 0)
-                ->orHaving('guesses_count', '>', 0)->get()
+                ->orHaving('predictions_count', '>', 0)->get()
                 ->map(fn (RaceSession $session): array => [
                     'id' => $session->id,
                     'race_weekend_name' => $session->raceWeekend->name,
@@ -75,7 +73,7 @@ class RaceSessionsManagementController
                 'type' => $raceSession->type->value,
                 'session_start' => $raceSession->session_start,
                 'session_end' => $raceSession->session_end,
-                'guesses' => $raceSession->guesses->count(),
+                'predictions' => $raceSession->predictions->count(),
                 'has_results' => $raceSession->sessionResult instanceof SessionResult
             ],
             'action' => fn (): ?string => $this->getRequiredAction($raceSession),
@@ -120,11 +118,11 @@ class RaceSessionsManagementController
             return 'import-results';
         }
 
-        if (!$session->hasAttribute('guesses_count')) {
-            $session->setAttribute('guesses_count', $session->guesses->whereNull('score')->count());
+        if (!$session->hasAttribute('predictions_count')) {
+            $session->setAttribute('predictions_count', $session->predictions->whereNull('score')->count());
         }
 
-        if ($session->guesses_count > 0) {
+        if ($session->predictions_count > 0) {
             return 'calculate-scores';
         }
 

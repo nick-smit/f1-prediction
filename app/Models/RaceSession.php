@@ -27,8 +27,8 @@ use Override;
  * @property SessionType $type
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, Guess> $guesses
- * @property-read int|null $guesses_count
+ * @property-read Collection<int, Prediction> $predictions
+ * @property-read int|null $predictions_count
  * @property-read RaceWeekend $raceWeekend
  * @property-read SessionResult|null $sessionResult
  * @method static RaceSessionFactory factory($count = null, $state = [])
@@ -75,8 +75,8 @@ class RaceSession extends Model
         return $this->hasOne(SessionResult::class);
     }
 
-    public function guesses(): HasMany
+    public function predictions(): HasMany
     {
-        return $this->hasMany(Guess::class);
+        return $this->hasMany(Prediction::class);
     }
 }

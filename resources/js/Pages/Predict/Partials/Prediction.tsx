@@ -58,7 +58,7 @@ export default function Prediction(props: Props) {
                                         onClick={() =>
                                             handleRemoveDriver(driver)
                                         }
-                                        aria-label={`Remove ${driver.name} from guess`}
+                                        aria-label={`Remove ${driver.name} from prediction`}
                                         variant="action"
                                         icon={<SmallCloseIcon />}
                                     />

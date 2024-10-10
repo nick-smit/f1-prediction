@@ -10,7 +10,7 @@ use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultNotFoundException;
 use App\GrandPrixGuessr\Data\Scraper\StatsF1\SessionResultScraper;
 use App\GrandPrixGuessr\Session\SessionType;
 use App\Http\Controllers\Admin\RaceSessionsManagementController;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\RaceWeekend;
 use App\Models\SessionResult;
@@ -52,7 +52,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
                     'type' => 'string',
                     'session_start' => 'string',
                     'session_end' => 'string',
-                    'guesses' => 'integer',
+                    'predictions' => 'integer',
                     'has_results' => 'boolean',
                 ]))
             ->has('action_required', 0)
@@ -68,9 +68,9 @@ final class RaceSessionsManagementControllerTest extends TestCase
         $noSessionResult = RaceSession::factory()->create([
             'session_end' => Carbon::yesterday(),
         ]);
-        $withGuesses = RaceSession::factory()
+        $withPredictions = RaceSession::factory()
             ->has(SessionResult::factory())
-            ->has(Guess::factory()->state(['score' => null]))
+            ->has(Prediction::factory()->state(['score' => null]))
             ->create([
                 'session_end' => Carbon::yesterday(),
             ]);
@@ -91,7 +91,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
             )->has(
                 'action_required.1',
                 fn (AssertableInertia $page): AssertableJson => $page
-                ->where('id', $withGuesses->id)
+                ->where('id', $withPredictions->id)
                 ->whereType('race_weekend_name', 'string')
                 ->whereType('type', 'string')
                 ->where('action', 'calculate-scores')
@@ -106,7 +106,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
         $this->actingAs($user);
 
         $session = RaceSession::factory()
-            ->has(Guess::factory()->count(1))
+            ->has(Prediction::factory()->count(1))
             ->create(
                 [
                 'race_weekend_id' => RaceWeekend::factory()->create(['name' => 'Bahrain Grand Prix']),
@@ -129,7 +129,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
                     'type' => 'race',
                     'session_start' => Carbon::today()->jsonSerialize(),
                     'session_end' => Carbon::tomorrow()->jsonSerialize(),
-                    'guesses' => 1,
+                    'predictions' => 1,
                     'has_results' => false,
                 ]))
             ->where('action', null)
@@ -145,7 +145,7 @@ final class RaceSessionsManagementControllerTest extends TestCase
 
         $result = SessionResult::factory()
             ->has(RaceSession::factory()
-                ->has(Guess::factory()->count(1))
+                ->has(Prediction::factory()->count(1))
                 ->state(
                     [
                         'race_weekend_id' => RaceWeekend::factory()->create(['name' => 'Bahrain Grand Prix']),

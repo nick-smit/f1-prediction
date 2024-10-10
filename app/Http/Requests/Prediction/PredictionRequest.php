@@ -11,7 +11,6 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use Override;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PredictionRequest extends FormRequest
 {
@@ -27,10 +26,6 @@ class PredictionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $raceSession = $this->getRaceSession();
-
-        if (!$raceSession->guessable) {
-            throw new NotFoundHttpException('The session was not found');
-        }
 
         if ($raceSession->session_start->isPast()) {
             throw ValidationException::withMessages([

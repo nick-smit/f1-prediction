@@ -34,13 +34,13 @@ final class ScoreCalculationTest extends TestCase
             $driverMap['NOR'],
         ]);
 
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $driverMap['RIC'],
             $driverMap['TSU'],
             $driverMap['GAS'],
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(0, $score);
     }
@@ -56,13 +56,13 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $copier->copy($driverMap['VER']),
             $copier->copy($driverMap['PER']),
             $copier->copy($driverMap['NOR']),
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(15, $score);
     }
@@ -78,13 +78,13 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $copier->copy($driverMap['VER']),
             $copier->copy($driverMap['LEC']),
             $copier->copy($driverMap['SAI']),
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(5, $score);
     }
@@ -100,13 +100,13 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $copier->copy($driverMap['LEC']),
             $copier->copy($driverMap['VER']),
             $copier->copy($driverMap['SAI']),
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(3, $score);
     }
@@ -122,13 +122,13 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $copier->copy($driverMap['LEC']),
             $copier->copy($driverMap['VER']),
             $copier->copy($driverMap['SAI']),
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(3, $score);
     }
@@ -144,13 +144,13 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $copier->copy($driverMap['VER']),
             $copier->copy($driverMap['LEC']),
             $copier->copy($driverMap['SAI']),
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(2, $score);
     }
@@ -166,13 +166,13 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopThree::fromArray([
+        $prediction = TopThree::fromArray([
             $copier->copy($driverMap['VER']),
             $copier->copy($driverMap['LEC']),
             $copier->copy($driverMap['SAI']),
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(2, $score);
     }
@@ -195,7 +195,7 @@ final class ScoreCalculationTest extends TestCase
 
         // Use deep copy to make sure every instance of Driver or Team has a different instance ID
         $copier = new DeepCopy();
-        $guess = TopTen::fromArray([
+        $prediction = TopTen::fromArray([
             $copier->copy($driverMap['VER']), // 5
             $copier->copy($driverMap['PIA']), // 3
             $copier->copy($driverMap['NOR']), // 3
@@ -208,7 +208,7 @@ final class ScoreCalculationTest extends TestCase
             $copier->copy($driverMap['ALO']), // 0
         ]);
 
-        $score = $this->scoreCalculation->calculate($raceResult, $guess);
+        $score = $this->scoreCalculation->calculate($raceResult, $prediction);
 
         $this->assertSame(21, $score);
     }

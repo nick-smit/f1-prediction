@@ -38,7 +38,7 @@ export type RaceSession = {
     type: SessionType;
     session_start: DateTime;
     session_end: DateTime;
-    guesses: number;
+    predictions: number;
     has_results: boolean;
 };
 
@@ -177,7 +177,7 @@ export default function Index({ race_sessions, action_required }: Props) {
                             <Th>Race weekend</Th>
                             <Th>Session</Th>
                             <Th>Session start</Th>
-                            <Th isNumeric>Guesses</Th>
+                            <Th isNumeric>Predictions</Th>
                             <Th>Results in</Th>
                         </Tr>
                     </Thead>
@@ -200,7 +200,7 @@ export default function Index({ race_sessions, action_required }: Props) {
                                         raceSession.session_start
                                     )}
                                 </Td>
-                                <Td isNumeric>{raceSession.guesses}</Td>
+                                <Td isNumeric>{raceSession.predictions}</Td>
                                 <Td>
                                     {raceSession.has_results ? 'true' : 'false'}
                                 </Td>

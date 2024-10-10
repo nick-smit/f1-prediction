@@ -17,7 +17,6 @@ class HomeController
     {
         $nextSession = RaceSession::query()
             ->with('raceWeekend')
-            ->whereGuessable(true)
             ->whereRaw('`session_start` > NOW()')
             ->orderBy('session_start')
             ->first();

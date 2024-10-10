@@ -10,7 +10,7 @@ use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMap;
 use App\GrandPrixGuessr\Data\DriverDTOMap\DriverDTOMapFactory;
 use App\Models\Driver;
 use App\Models\DriverContract;
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\SessionResult;
 use App\Models\Team;
@@ -26,7 +26,7 @@ use Tests\TestCase;
 final class CalculateScoresTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_a_session_without_guesses_does_nothing(): void
+    public function test_a_session_without_predictions_does_nothing(): void
     {
         $session = RaceSession::factory()->create();
 
@@ -47,7 +47,7 @@ final class CalculateScoresTest extends TestCase
         );
 
         $session = RaceSession::factory()->create();
-        Guess::factory()->count(10)->create(['race_session_id' => $session]);
+        Prediction::factory()->count(10)->create(['race_session_id' => $session]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The driver DTO map should not be empty.');
@@ -55,7 +55,7 @@ final class CalculateScoresTest extends TestCase
         $this->app->make(CalculateScores::class)->handle($session);
     }
 
-    public function test_scores_should_be_saved_for_a_guess(): void
+    public function test_scores_should_be_saved_for_a_prediction(): void
     {
         // Create drivers, teams and driver contracts
         $teams = Team::factory()->count(5)->create();
@@ -74,7 +74,7 @@ final class CalculateScoresTest extends TestCase
             ->create(['start_date' => new DateTime('01-01-2024')]);
         // End create drivers, teams and driver contracts
 
-        // Create session result and a guess
+        // Create session result and a prediction
         $session = RaceSession::factory()->create([
             'session_start' => new DateTime('01-01-2024')
         ]);
@@ -92,7 +92,7 @@ final class CalculateScoresTest extends TestCase
             'p10_id' => $drivers[9],
         ]);
 
-        $guess = Guess::factory()->create([
+        $prediction = Prediction::factory()->create([
             'race_session_id' => $session,
             'p1_id' => $drivers[0],
             'p2_id' => $drivers[1],
@@ -106,7 +106,7 @@ final class CalculateScoresTest extends TestCase
             'p10_id' => $drivers[9],
             'score' => null,
         ]);
-        // End create session result and a guess
+        // End create session result and a prediction
 
         $this->instance(
             ScoreCalculation::class,
@@ -120,10 +120,10 @@ final class CalculateScoresTest extends TestCase
         $this->queryCounted(fn () => $this->app->make(CalculateScores::class)->handle($session));
 
         $this->assertQueryCount(7);
-        $this->assertSame(123, $guess->refresh()->score);
+        $this->assertSame(123, $prediction->refresh()->score);
     }
 
-    public function test_scores_should_be_saved_for_multiple_guesses(): void
+    public function test_scores_should_be_saved_for_multiple_predictions(): void
     {
         // Create drivers, teams and driver contracts
         $teams = Team::factory()->count(5)->create();
@@ -142,7 +142,7 @@ final class CalculateScoresTest extends TestCase
             ->create(['start_date' => new DateTime('01-01-2024')]);
         // End create drivers, teams and driver contracts
 
-        // Create session result and a guess
+        // Create session result and a prediction
         $session = RaceSession::factory()->create([
             'session_start' => new DateTime('01-01-2024')
         ]);
@@ -160,7 +160,7 @@ final class CalculateScoresTest extends TestCase
             'p10_id' => $drivers[9],
         ]);
 
-        Guess::factory()->count(10)->create([
+        Prediction::factory()->count(10)->create([
             'race_session_id' => $session,
             'p1_id' => $drivers[0],
             'p2_id' => $drivers[1],
@@ -174,7 +174,7 @@ final class CalculateScoresTest extends TestCase
             'p10_id' => $drivers[9],
             'score' => null,
         ]);
-        // End create session result and a guess
+        // End create session result and a prediction
 
         $this->instance(
             ScoreCalculation::class,

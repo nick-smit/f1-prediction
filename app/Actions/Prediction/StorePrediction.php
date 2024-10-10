@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Prediction;
 
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\RaceSession;
 use App\Models\User;
 
@@ -15,7 +15,7 @@ class StorePrediction
      */
     public function handle(User $user, RaceSession $raceSession, iterable $prediction): void
     {
-        $predictionModel = Guess::query()->firstOrNew([
+        $predictionModel = Prediction::query()->firstOrNew([
             'user_id' => $user->id,
             'race_session_id' => $raceSession->id,
         ]);

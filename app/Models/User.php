@@ -31,10 +31,10 @@ use Override;
  * @property bool $is_admin
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, Guess> $guesses
- * @property-read int|null $guesses_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read Collection<int, Prediction> $predictions
+ * @property-read int|null $predictions_count
  * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
@@ -96,8 +96,8 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function guesses(): HasMany
+    public function predictions(): HasMany
     {
-        return $this->hasMany(Guess::class);
+        return $this->hasMany(Prediction::class);
     }
 }

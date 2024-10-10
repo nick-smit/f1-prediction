@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Models;
 
-use App\Models\Guess;
+use App\Models\Prediction;
 use App\Models\User;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,16 +21,16 @@ final class UserTest extends TestCase
         $this->assertInstanceOf(DateTime::class, $user->email_verified_at);
     }
 
-    public function test_a_user_can_have_guesses(): void
+    public function test_a_user_can_have_predictions(): void
     {
         $user = User::factory()->create();
-        $guesses = Guess::factory()->count(10)->make(['user_id' => null]);
+        $predictions = Prediction::factory()->count(10)->make(['user_id' => null]);
 
-        $user->guesses()->saveMany($guesses);
+        $user->predictions()->saveMany($predictions);
 
         $user = $user->refresh();
 
-        $this->assertDatabaseCount(Guess::class, 10);
-        $this->assertNotEmpty($user->guesses->toArray());
+        $this->assertDatabaseCount(Prediction::class, 10);
+        $this->assertNotEmpty($user->predictions->toArray());
     }
 }

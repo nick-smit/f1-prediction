@@ -86,8 +86,8 @@ export default function Show({ race_session, results, action }: Props) {
                                 </Td>
                             </Tr>
                             <Tr>
-                                <Th>Guesses</Th>
-                                <Td>{race_session.guesses}</Td>
+                                <Th>Predictions</Th>
+                                <Td>{race_session.predictions}</Td>
                             </Tr>
                         </Tbody>
                     </Table>
