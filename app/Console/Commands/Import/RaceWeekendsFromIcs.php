@@ -65,16 +65,14 @@ class RaceWeekendsFromIcs extends Command
             }
 
             /** @var RaceWeekend $raceWeekend */
-            $raceWeekend = RaceWeekend::whereName($eventName)
+            $raceWeekend = RaceWeekend::query()
                 ->whereRaw('YEAR(start_date) = ?', [(new DateTime($events[0]->dtstart_tz))->format('Y')])
-                ->firstOrCreate(
-                    [
-                        'name' => $eventName,
-                        'start_date' => new DateTime($events[0]->dtstart_tz),
-                        'stats_f1_name' => $statsF1Name,
-                    ]
-                );
+                ->firstOrNew([
+                    'name' => $eventName,
+                ]);
 
+            $raceWeekend->start_date = new DateTime($events[0]->dtstart_tz);
+            $raceWeekend->stats_f1_name = $statsF1Name;
             $raceWeekend->save();
 
             foreach ($events as $event) {

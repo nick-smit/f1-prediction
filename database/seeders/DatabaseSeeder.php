@@ -19,16 +19,14 @@ class DatabaseSeeder extends Seeder
         if (app()->environment('local')) {
             User::factory(10)->create();
 
-            User::factory()->create([
+            User::factory()->admin()->create([
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => 'test'
             ]);
-        }
 
-        $this->call([
-            DriverSeeder::class,
-            TeamSeeder::class,
-        ]);
+            $this->call(ParticipantsSeeder::class);
+            $this->call(Season2024WeekendSeeder::class);
+        }
     }
 }

@@ -22,7 +22,7 @@ class HomeController
             ->first();
 
         return $responseFactory->render('Home/Home', [
-            'next_session' => $nextSession instanceof RaceSession ? [
+            'next_event' => $nextSession instanceof RaceSession ? [
                 'id' => $nextSession->id,
                 'race_weekend_name' => $nextSession->raceWeekend->name,
                 'type' => $nextSession->type,

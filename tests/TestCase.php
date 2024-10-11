@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -56,4 +57,10 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
+    protected function assertModelIs(Model $expected, $actual): void
+    {
+        $this->assertInstanceOf(Model::class, $actual);
+
+        $this->assertTrue($expected->is($actual), sprintf('Failed asserting that model %s with key %s equals expected %s with key %s', $actual::class, $actual->getKey(), $expected::class, $expected->getKey()));
+    }
 }

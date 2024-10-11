@@ -14,4 +14,6 @@ require __DIR__.'/partial/auth.php';
 Route::prefix('/prediction')->middleware('auth')->name('prediction.')->group(function (): void {
     Route::get('/', [PredictionController::class, 'index'])->name('index');
     Route::post('/{raceSession}', [PredictionController::class, 'store'])->name('store');
+
+    Route::get('/{raceWeekend:slug}', [PredictionController::class, 'show'])->name('show');
 });

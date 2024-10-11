@@ -24,11 +24,11 @@ final class HomeControllerTest extends TestCase
         $testResponse->assertStatus(200);
         $testResponse->assertInertia(static function (AssertableInertia $assertableInertia): void {
             $assertableInertia->component('Home/Home')
-                ->where('next_session', null);
+                ->where('next_event', null);
         });
     }
 
-    public function test_home_responds_with_the_next_session(): void
+    public function test_home_responds_with_the_next_event(): void
     {
         RaceSession::factory(3)
             ->has(RaceWeekend::factory()->state(['name' => 'Some GP']))
@@ -45,7 +45,7 @@ final class HomeControllerTest extends TestCase
         $testResponse->assertInertia(static function (AssertableInertia $assertableInertia): void {
             $assertableInertia->component('Home/Home')
                 ->has(
-                    'next_session',
+                    'next_event',
                     fn (AssertableInertia $page): AssertableJson => $page
                     ->whereType('id', 'integer')
                     ->whereType('race_weekend_name', 'string')

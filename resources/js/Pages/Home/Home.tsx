@@ -12,10 +12,10 @@ export type NextEvent = {
 };
 
 type Props = {
-    next_session: NextEvent;
+    next_event?: NextEvent;
 };
 
-export default function Home({ next_session }: Props): ReactElement {
+export default function Home({ next_event }: Props): ReactElement {
     return (
         <Layout title={'Home'}>
             <Stack spacing={4}>
@@ -26,7 +26,7 @@ export default function Home({ next_session }: Props): ReactElement {
                 </Text>
 
                 <HStack>
-                    <NextEvent nextEvent={next_session} />
+                    {next_event ? <NextEvent nextEvent={next_event} /> : null}
                 </HStack>
             </Stack>
         </Layout>

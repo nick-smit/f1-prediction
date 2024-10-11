@@ -15,6 +15,7 @@ return new class () extends Migration {
             $table->date('start_date');
             $table->string('name');
             $table->string('stats_f1_name');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

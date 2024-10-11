@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Stringable;
 use Override;
 
 /**
@@ -48,9 +49,36 @@ class RaceWeekend extends Model
         'stats_f1_name',
     ];
 
+    #[Override]
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(static function (RaceWeekend $raceWeekend): void {
+            $raceWeekend->slug = (new Stringable($raceWeekend->start_date->year . '-' . $raceWeekend->name))
+                ->slug();
+        });
+    }
+
     public function raceSessions(): HasMany
     {
         return $this->hasMany(RaceSession::class);
+    }
+
+    public function getPrevious(): ?RaceWeekend
+    {
+        return RaceWeekend::query()
+            ->whereDate('start_date', '<', $this->start_date)
+            ->orderByDesc('start_date')
+            ->first();
+    }
+
+    public function getNext(): ?RaceWeekend
+    {
+        return RaceWeekend::query()
+            ->whereDate('start_date', '>', $this->start_date)
+            ->orderBy('start_date')
+            ->first();
     }
 
     #[Override]

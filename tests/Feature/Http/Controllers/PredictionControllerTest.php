@@ -77,8 +77,46 @@ final class PredictionControllerTest extends TestCase
                 ->whereType('race.id', 'integer')
                 ->where('race.session_start', Carbon::tomorrow()->addDay()->jsonSerialize())
                 ->where('race.prediction', [])
+                ->has('previous_event_slug')
+                ->has('next_event_slug')
             )
             ->has('drivers', 10)
+        );
+    }
+
+    public function test_a_prediction_can_be_viewed(): void
+    {
+        $user = User::factory()->create();
+
+        DriverContract::factory()->count(10)->create();
+
+        $event = RaceWeekend::factory()
+            ->has(RaceSession::factory()->qualification()->state(['session_start' => Carbon::tomorrow()])->has(
+                Prediction::factory()->drivers(Driver::all())->state(['user_id' => $user])
+            ))
+            ->has(RaceSession::factory()->race()->state(['session_start' => Carbon::tomorrow()->addDay()]))
+            ->create([
+                'name' => 'Some GP'
+            ]);
+
+        $response = $this->actingAs($user)->get(route('prediction.show', ['raceWeekend' => $event]));
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn (AssertableInertia $page): AssertableJson => $page->component('Predict/Predict')
+                ->has(
+                    'event',
+                    fn (AssertableInertia $page): AssertableJson => $page->where('name', 'Some GP')
+                        ->whereType('qualification.id', 'integer')
+                        ->where('qualification.session_start', Carbon::tomorrow()->jsonSerialize())
+                        ->has('qualification.prediction', 10)
+                        ->whereType('race.id', 'integer')
+                        ->where('race.session_start', Carbon::tomorrow()->addDay()->jsonSerialize())
+                        ->where('race.prediction', [])
+                        ->has('previous_event_slug')
+                        ->has('next_event_slug')
+                )
+                ->has('drivers', 10)
         );
     }
 

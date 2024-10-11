@@ -21,13 +21,32 @@ class PredictionController
     {
         /** @var RaceWeekend|null $event */
         $event = RaceWeekend::query()
-            ->select(['race_weekends.id', 'race_weekends.name'])
+            ->select(['race_weekends.*'])
             ->with('raceSessions')
             ->join('race_sessions', 'race_weekend_id', 'race_weekends.id')
             ->whereRaw('session_start > NOW()')
             ->orderBy('session_start')
             ->first();
 
+        return $this->renderEvent($event, $authManager);
+    }
+
+    public function show(AuthManager $authManager, RaceWeekend $raceWeekend): Response
+    {
+        return $this->renderEvent($raceWeekend, $authManager);
+    }
+
+    public function store(RaceSession $raceSession, StorePrediction $action, PredictionRequest $request): void
+    {
+        $action->handle(
+            $request->user(),
+            $raceSession,
+            $request->get('prediction')
+        );
+    }
+
+    private function renderEvent(?RaceWeekend $event, AuthManager $authManager): Response
+    {
         if ($event instanceof RaceWeekend) {
             $drivers = Driver::query()
                 ->whereHas('contracts', fn ($builder) => $builder->active($event->raceSessions->first()->session_start))
@@ -51,26 +70,19 @@ class PredictionController
                 'qualification' => [
                     ...$qualification->only(['id', 'session_start']),
                     'prediction' => $predictions
-                        ->firstWhere('race_session_id', $qualification->id)
-                        ?->getDrivers() ?? []
+                            ->firstWhere('race_session_id', $qualification->id)
+                            ?->getDrivers() ?? []
                 ],
                 'race' => [
                     ...$race->only(['id', 'session_start']),
                     'prediction' => $predictions
-                        ->firstWhere('race_session_id', $race->id)
-                        ?->getDrivers() ?? [],
+                            ->firstWhere('race_session_id', $race->id)
+                            ?->getDrivers() ?? [],
                 ],
+                'previous_event_slug' => $event->getPrevious()?->slug,
+                'next_event_slug' => $event->getNext()?->slug,
             ] : null,
             'drivers' => $drivers ?? null,
         ]);
-    }
-
-    public function store(RaceSession $raceSession, StorePrediction $action, PredictionRequest $request): void
-    {
-        $action->handle(
-            $request->user(),
-            $raceSession,
-            $request->get('prediction')
-        );
     }
 }
